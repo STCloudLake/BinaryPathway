@@ -1,0 +1,518 @@
+ 
+Leveraging VR Technologies for Edutainment 
+in Learning Complex  STEM Concepts Interim 
+Report
+ 
+ 
+COMP5925 Metaverse Project I Interim Report    
+Student Name/ID No.:   SHI Yunze  (25126879G)  
+Supervisor：       Dr  PANG  Wai  Man  Raymond  
+Submission Date：                20 Mar 2026                
+1.Introduction
+ 
+In conventional classroom activities, abstract mathematical concepts – like discrete structures, path 
+connectivity, and binary reasoning – are often poorly understood intuitively, with lower engagement. Given its 
+spatial presence and embodied interaction, immersive virtual reality (VR) can be used to create a way to 
+translate abstract symbolic rules into real-world, manipulable tasks. Inspired by this, we propose Binary Path, 
+an entertainment-based VR puzzle game in which players lay “1-tiles” across a three-dimensional grid and 
+create a single, connected path from the start to the goal. Through a quick “place–test–revise” circuit, the game 
+builds path connectivity and binary logic into intuitive tactile, auditory, and visual experiences; while frequent 
+feedback loops further solidify our grasp of the idea behind binary logic concepts. This project presents a 
+gamified design approach in a way that promotes continuous experimentation and cumulative development of 
+mathematical intuition through gamified learning processes. With this goal, BinaryPath should serve as a 
+puzzle-based framework that allows adaptation to other VR educational scenarios. We expect that university 
+students, beginners interested in binary logic and discrete structures, VR game players, and educators, 
+researchers, developers, and game designers interested in how VR can model mathematical structures will get 
+interest and understanding in this project.
+2.Objectives 
+ 
+Objective 1 — Gamification Aligned with Learning Mechanics
+ 
+We will achieve sustained engagement and concept formation by integrating task‑embedded gamification that 
+directly supports the place–test–revise loop: challenge calibration via tile budgets, meaningful penalties for 
+illegal branches, micro‑achievements for strategy discovery, and immediate multimodal feedback that affirms 
+valid connectivity or flags misconceptions. Rather than adding extrinsic rewards on top of content, we embed 
+motivational affordances into the structure of puzzle tasks so that progression reflects conceptual mastery, not 
+mere time‑on‑task. This contributes a reusable design pattern for math‑centric VR, advancing the 
+mechanics‑as‑pedagogy paradigm and offering value to both educational VR and entertainment puzzle design. 
+The approach builds on and extends gamification research showing improvements in interactivity, 
+involvement, self‑efficacy, engagement, focus, motivation, and academic outcomes when game elements are 
+aligned with learning objectives  (Nacke & Deterding, 2017;Bouchrika et al., 2019; Kim et al., 2017; Yildirim, 
+2017)
+ 
+Objective 2 — Embodied Interaction with Immediate, Multimodal Feedback
+ 
+We will harness VR’s core affordances—interaction, immersion, immediacy, involvement, and presence—to 
+make abstract rules manipulable and perceptually vivid: in BinaryPath, learners directly place 1‑tiles on a 
+spatial grid and receive immediate validation via light‑orb traversal, path highlighting, and subtle haptics, 
+maintaining short loops and low failure cost to enable hypothesis testing under constraints and to transform 
+symbolic connectivity/binary reasoning into embodied events that lower cognitive load (Lampropoulos et al., 
+2020; Freina & Ott, 2015; Psotka, 1995; Ryan, 2015; Sherman & Craig, 2003; Biocca & Delaney, 1995; Blascovich 
+& Bailenson, 2011). This design aligns with evidence that safe, immersive, and interactive environments 
+increase motivation, participation, and learning effectiveness and support experiential practice of complex 
+skills across instructional settings (Bronack et al., 2006; Dickey, 2005; Dalgarno et al., 2011; Radianti et al., 2020; 
+Annetta et al., 2009; ). Our contribution and importance lie in presenting a pedagogy‑aware interaction loop 
+that couples embodied manipulation with instant state feedback—useful for micro‑lessons and entertainment 
+puzzles alike—and in demonstrating a practical pathway for intuitive understanding of discrete structures in 
+VR, where adoption continues to grow with improved accessibility (Hu‑Au & Lee, 2017; Martín‑Gutiérrez et al., 
+2017; Olmos et al., 2018; Merchant et al., 2014). Innovation over prior work stems from embedding immersion 
+and immediacy into the rule‑and‑strategy formation itself—rather than layering extrinsic rewards—by fusing 
+breadth‑first search (BFS) rule‑checking, world‑space socket‑based snapping, and multimodal cues into a 
+coherent, high‑responsiveness loop optimized for standalone headsets, thereby advancing 
+mechanics‑as‑pedagogy for both VR in education and VR game design.
+ 
+Objective 3 — A Modular, Quest‑Ready VR Puzzle Framework
+ 
+We will package Binary Path into a Unity/Quest‑ready framework that cleanly separates grid generation, 
+socket‑based snapping, BFS connectivity checks, and multimodal feedback orchestration, exposing each as 
+configurable modules and example scenes so educators, researchers, and indie teams can rapidly adapt the 
+system to other math/logic topics (e.g., trees, flows, constraint satisfaction). Concretely, interaction will be 
+implemented atop the XR Interaction Toolkit (Interactors/Intereactables and XR Socket Interactor for robust, 
+world‑space snapping), ensuring reproducible behaviours and clear affordances across devices. 
+Cross‑platform runtime will target OpenXR with Quest support to reduce vendor lock‑in and align with current 
+Unity guidance for Android/Quest deployment and controller profiles, while remaining compatible with Meta’s 
+feature set. To meet standalone HMD performance budgets, the framework will default to URP with SRP 
+Batcher / GPU‑Resident Drawer enabling GPU instancing via BatchRendererGroup to reduce draw calls and 
+CPU time, with Forward+ path and documentation for when to enable/disable GRD in mobile builds; we will 
+also provide Quest‑focused presets and pointers to performance controls (e.g., target refresh rate, fixed 
+foveated rendering, dynamic resolution) so adopters can tune for 72/80/90 Hz targets on device. At the system 
+level, the framework contributes a reusable, mechanics‑as‑pedagogy template for short‑cycle, puzzle‑based 
+learning consistent with design guidance from ScienceVR, which argues for explicit links between interaction 
+design, in‑app measurement, and learning outcomes in STEM VR; at the technology level, it consolidates widely 
+scattered best practices (interaction, rendering, device configuration) into a coherent starter kit comparable in 
+spirit to open‑source XR scaffolds, but focused on math‑centric gameplay and classroom deployment. By 
+delivering a documented package (APIs, prefabs, validation tools) that is Quest‑deployable out‑of‑the‑box and 
+OpenXR‑aligned, this objective advances the state of practice for educationalVR (lowering replication cost, 
+enabling rapid classroom pilots) and for VR games (codifying performant interaction/rendering patterns for 
+puzzle loops on standalone headsets).(Planey, J., Trencevski, D., Kelle, S. ,2026)
+ 
+3.Literature Review
+ 
+System perspective
+ 
+Across STEM, immersive technologies tend to raise engagement and perceived understanding, yet consistent 
+gains in learning effectiveness depend on task quality—namely manipulable representations, short feedback 
+cycles, low cognitive load, and embedded assessment. Reviews also flag recurring shortcomings: many 
+educational VR systems lack explicit links to learning theory and rely on usability‑centric (not outcome‑centric) 
+evaluations, motivating designs that couple interaction, process data, and learning goals—the stance we adopt 
+with BinaryPath’s mechanics‑as‑pedagogy approach. In parallel, a large systematic review on VR + gamification 
+shows that when challenge, progression, and feedback are intrinsically aligned with learning tasks (rather than 
+added as extrinsic rewards), learners show higher motivation, engagement, self‑efficacy, and achievement 
+across levels and subjects, which directly supports encoding connectivity and binary decisions inside a 
+replayable puzzle loop. 
+Technology perspective
+ 
+For robust interaction on standalone HMDs, Unity’s XR Interaction Toolkit (Interactors/Interactables) and the 
+XR Socket Interactor enable predictable world‑space grabbing/snapping and clean event flows suited to a 
+place–test–revise puzzle, while simplifying haptic/visual/audio orchestration. To sustain frame‑time on 
+Quest‑class devices, a conservative rendering stack—URP with SRP Batcher and GPU‑Resident Drawer 
+(BatchRendererGroup‑driven instancing) on Forward+—reduces CPU submission and draw calls (with 
+documented trade‑offs). We also expose refresh‑rate and performance controls so projects can target 
+72/80/90 Hz and deploy dynamic resolution/FFR where appropriate; and we standardize on OpenXR (Quest 
+Support) to minimize lock‑in and streamline Android/Quest controller profiles. For rule checking, BFS provides 
+O(V+E) grid connectivity with pedagogically transparent frontier/visited visualization; and a recent three‑level 
+meta‑analysis suggests that lightweight vibrotactile cues paired with clear state transitions can improve 
+conceptual learning and UX in short sessions, reserving heavier kinesthetic solutions for future studies. 
+Conclusion
+ 
+The literature converges on a practical mandate: encode the learning structure into the interaction structure. 
+Yet reusable, math‑centric VR templates remain scarce. BinaryPath responds with an entertainment‑first, 
+Quest‑ready, OpenXR‑aligned puzzle framework that operationalizes manipulability + rapid feedback + 
+outcome‑aware evaluation, addressing the system‑design/tech‑implementation/assessment coupling 
+highlighted by prior frameworks and reviews.
+ 
+4.Proposed Methodology
+ 
+ 
+Figure 1. The process for designing the GLA  (Papamitsiou et al., 2024). 
+ 
+The methodological approach of this project follows an iterative, human‑centered design cycle inspired by the 
+framework illustrated in Figure 1, which emphasizes continuous negotiation between user expectations, 
+technical feasibility, and educational value throughout development. This process unfolds across four tightly 
+connected phases—Understand, Explore, Test, and Evaluate—and involves three stakeholder groups: 
+end‑users, domain experts, and researchers. The following subsections describe how this cycle structures the 
+design and implementation of BinaryPath.
+Understand: 
+ 
+The initial stage focuses on identifying the conceptual and experiential needs related to path connectivity, 
+binary reasoning, and discrete structure intuition. Drawing on paper mentioned above, we analyze how 
+learners typically struggle with abstract symbolic reasoning, especially when feedback is delayed or 
+non‑interactive. This corresponds to the understand needs step in Figure 1, where researchers and end‑users 
+collaboratively articulate the learning barriers and expected forms of support.
+The outcome of this phase is a set of design requirements, including：
+manipulable representations of connectivity, 
+immediate multimodal feedback, 
+low‑friction interaction for novice VR users, and 
+short, self‑contained puzzle tasks suitable for micro‑learning contexts.
+Explore: 
+ 
+In the Explore phase, by iterates through cycles of ideation, sketching, and prototyping to translate the above 
+requirements into concrete VR mechanics. Guided by the ideate–prototype loop in Figure 1, we experiment 
+with different grid layouts, tile types, feedback modalities, and gesture/snap interactions using Unity’s XR 
+Interaction Toolkit.
+Rapid prototypes are tested internally to refine:
+the place–test–revise loop,
+the clarity of connectivity rules,
+multimodal feedback (colour, haptic cues, audio), and
+early level structures that introduce constraints (tile budgets, branch penalties).
+This stage serves to narrow the design space while ensuring technical feasibility on standalone HMDs 
+(Quest‑class devices).
+Test: 
+ 
+Following early prototyping, the Test stage—aligned with prototype–test–revise in Figure 1—focuses on 
+implementing a stable vertical slice of the BinaryPath system. This includes:
+the grid generator and tile placement logic,
+BFS‑based connectivity validation,
+world‑space UI and socket‑based snapping,
+optimized URP rendering for stable 72–90 Hz performance, and
+short puzzle levels.
+Small‑scale playtests (1–3 participants per cycle) are conducted to observe discoverability, usability, and error 
+patterns. Feedback drives continuous revision of interface clarity, difficulty tuning, and feedback timing. Each 
+iteration aims to balance technical responsiveness with pedagogical transparency, ensuring that connectivity 
+rules are both learnable and enjoyable.
+Evaluate:
+ 
+The final stage corresponds to the evaluate–revise loop in Figure 1 and centers on a structured pilot study to 
+assess both the playability and initial learning value of BinaryPath. Evaluation focuses on:
+Usability and engagement: completion times, error profiles, subjective satisfaction, and perceived clarity 
+of feedback;
+Player experience: flow, frustration, motivation, and sense of progression;
+System performance: frame‑time stability, input latency, and comfort (zero‑locomotion design).
+Findings from this phase feed back into the refinement cycle, ensuring that the final system both supports 
+enjoyable gameplay and serves as a reusable template for math‑centric VR learning.
+modelling：
+ 
+By taking into account both time costs and technical capabilities, the project will utilize AI-generated methods 
+to fulfill modeling requirements during the process. Through repeated comparison of the generated models’ 
+effectiveness, the project will adopt the open-source Hunyuan2.1 model for model generation and application.
+Table1. Comparison between 3DGS and diffusion model on the same image
+ 
+GridContainer
+Grid Manager
+Tile Placement System
+Puzzle System
+Puzzle Generator
+Rule Validator
+Interaction Manager
+AI using：
+ 
+Generative AI tools will be applied in the analysis and maintenance phases of the project, and may also be 
+used for code validation and review. However, no generative AI will be used for code writing in the project, nor 
+for the preparation of related documentation. The models used in the project may be AI-generated, while all 
+icons, music, sound effects, and text fonts will be sourced from content that is either copyright-free or already 
+commercially licensed.
+ 
+5.Concrete implementation
+ 
+5.1 Core System Architecture
+ 
+Figure 2. The core system architecture 
+As the panel presented as a game puzzle, this component serves as a container group capable of holding 
+interactive tiles, and it supports both two‑dimensional adjacency rules for 2D gameplay and three‑dimensional 
+adjacency rules for spatial gameplay.
+ Its core part is the Grid Manager, which is responsible for managing the component’s layout, rules, and 
+puzzle pre‑generation.
+ The Tile Placement System handles the placement and removal of tiles. The Puzzle Generator is responsible 
+for initializing the puzzle by generating a random connected path as the solution, along with a series of 
+transformation steps (see below).The Rule Validator checks whether the puzzle is completed—that is, 
+whether a fully connected path between the start point and the end point has been formed. The Interaction 
+Manager handles VR interactions.
+ 
+5.2 Interactable Tile
+ 
+The basic operational unit of the game is the individual Tile, which contains both a truth value and logic.
+Figure 3. Tile with 0 value in Unity Editor
+Figure 4. The structure of tile in Unity Editor 
+Inside each Tile, there is a Label （InteractableObjectLabel）used to display the currently stored value. When 
+the truth value is 1, the Label shows a green background; when the truth value is 0, it shows a red background. 
+The Label also supports adaptive sizing and orientation:
+it gradually scales down when the user approaches,
+gradually scales up when the user moves away,
+and caps at a predefined maximum size.
+In addition, the Label rotates to always face the camera.
+During interaction, the Label is temporarily hidden; after interaction stops for a certain period and the tile is 
+being looked at, the Label reappears.
+Figure 5. The label of tile 
+The Tile also provides multimodal feedback:
+When grasped using the controllers, its edges emit a slight glow, the controller delivers a light haptic 
+vibration, and a pickup sound effect is played.
+When grasped using hand‑tracking gestures, six different visual feedback patterns are shown 
+depending on the specific grasp gesture and whether the left or right hand is used.
+When the Tile is released, a placement sound effect is played.
+Table2. Three different grasp poses (right hand)
+ 
+Tiles can connect with other Tiles of the same type to form various shapes.Value tiles can connect with other 
+value tiles, and logic tiles can connect with other logic tiles.
+Figure 6. The combination of tiles 
+As shown in the figure 6 above, two Tiles with a truth value of 1 and one Tile with a truth value of 0 can be 
+combined into a single unit. In VR mode, users can interact with the Tiles using either hand‑tracking gestures 
+or controllers to perform grasp actions.
+ When each hand grasps one Tile (or a Tile group) and the two are brought close to each other within a certain 
+distance, the system checks whether a valid connection can be formed; if so, the connection is established 
+once the user releases both hands.
+ Conversely, when both hands hold the two ends of a combined structure and move them apart (or twist 
+them), exceeding a specified distance (or angle), the connection is broken.
+The Tile connection system uses a non‑traditional detection mechanism, different from simple collider‑based 
+detection or node‑binding approaches. As shown in the figure, each Tile is equipped with a small collider on 
+each of its six faces, each paired with a Socket Interactor, while the Tile itself has a Grab Interactable attached. 
+This design effectively makes each Tile a six‑sided plug, while each face also contains an invisible slot, ensuring 
+that Tiles can be combined in arbitrary orientations and still snap precisely into the correct positions. 
+Traditional collision‑based detection would cause unpredictable physical interactions when multiple Tiles get 
+close to one another, making proper alignment much more difficult to guarantee. The dimensions of the 
+central Sphere Collider and the six external Box Colliders are carefully calculated to ensure stable alignment 
+between sockets under any multi‑Tile configuration or orientation, preventing incorrect snapping.
+When a value Tile and a binary logic Tile are brought close together and compressed, they merge into a single 
+unit, forming a logic Tile that carries a truth value. This combined logic Tile will revert into a value Tile when it 
+receives another incoming value Tile.
+Figure 7. The combination of logic tile and truth tile 
+Figure 8. Tiles in grid container 
+As shown in the figure 8, this is the state in which Tiles are inserted into the Grid Container. In practice, when 
+the game starts, the Grid Container automatically generates a Puzzle and fills it with different value Tiles.
+This Puzzle contains a visible start point and end point (randomly generated).(In the figure 9, the green Tile is 
+the start, and the red Tile is the end; the screenshot is taken in Editor mode.)The program first generates the 
+positions of the start and end points, ensuring that their coordinates fall within the index range of the 
+container. It then generates a connected path between the start and the end—a path consisting entirely of 
+Tiles with value 1 under the corresponding adjacency rules—ensuring that the Puzzle has at least one valid 
+solution.
+Next, along this path, the system randomly selects Tiles (including compound shapes formed by adjacent Tiles) 
+and applies a sequence of random logic operations (such as NOT, XOR 1, AND 0), recording these operations. 
+After a limited number of random logic transformations, the puzzle generation process is completed.
+Finally, the system spawns the recorded logic operations and their corresponding value Tiles (or combined 
+shapes) at randomly available positions in the scene. Depending on the difficulty settings, some of these 
+combined Tile structures may not be allowed to be separated.
+Figure 9. The start point and the end point of puzzle
+During gameplay, the player is required to use the limited set of logic tiles and value tiles (or tile combinations) 
+available in the scene to reverse this process and reconstruct the original puzzle‑generation path (or any other 
+valid solution).The Rule Validator uses a BFS algorithm to check whether there exists a valid connected path 
+inside the Grid Container. If a valid path is detected, the game is won. EIse if all tiles have been used and no 
+valid path is found, the game is automatically considered failed and restarts. The system can be configured 
+either to randomly generate a new puzzle or to restore the previously generated puzzle upon restart.
+Figure 9. Fullfilled puzzle
+5.3 Replay Value and Difficulty Curve
+ 
+Since the number of possible puzzles is extremely large, we provide only a simplified estimation here. We 
+consider a typical and most commonly studied setting: starting from the upper‑left corner, one may move only 
+to the right or downward until reaching the lower‑right corner (the classical lattice path problem, also a 
+fundamental result in BFS and combinatorics).
+In this setting, the total number of distinct paths from 
+ to 
+ is:
+Grid（m × n）
+Number of paths 
+规模级别
+That is, the path consists of 
+ downward steps and  rightward steps, for a total of 
+ moves. Any 
+permutation of these downward and rightward steps corresponds to a unique path.It is not difficult to see that 
+this binomial coefficient grows very rapidly as 
+ increases—approaching exponential growth.
+When 
+ and  increase simultaneously (e.g., a square grid):
+which follows from a Stirling‑based approximation. When 
+ or  is significantly larger than the other, the 
+number of paths grows even more closely to an exponential rate.
+Table3. relation between grid scale and number of paths
+However, in practice the puzzle has far more possible path configurations, due to the randomized start and 
+end points as well as the allowance of branching paths. Therefore, even for a 
+ Container, the number of 
+possible paths is already on the order of 
+.When the randomized logic operations are further taken into 
+account, it becomes clear that encountering the same puzzle twice is virtually impossible.
+On the other hand, increasing the number or length of possible paths does not significantly affect the difficulty 
+curve of the game. Intuitively, no matter how long or complex the underlying path is, if only single‑bit negation 
+operations are applied on top of it, the player can always solve the puzzle almost instantly. It is therefore 
+evident that the primary factor influencing the difficulty curve is the number of logic operations applied during 
+puzzle generation—especially region‑based operations and the allowance of repeated operations on the same 
+position. The number of logic operations increases the puzzle difficulty approximately in a quadratic manner.
+ 
+6.Conclusion and Future Work
+ 
+Over the past ten weeks of development, the core prototype of Binary Path has been largely completed. This 
+includes the implementation of a grid‑management framework, an interactive Tile system, a full 
+puzzle‑generation and validation mechanism, and multimodal interaction within a VR environment. The 
+development process did not fully follow the initial plan, and many new challenges were discovered along the 
+way (such as collision handling when multiple Tiles approach each other), along with several novel solutions 
+(such as the socket‑based connection system). The next stage of work will shift toward more concrete 
+development tasks: scene construction, 3D asset creation, level design, save/load functionality, and the 
+multiplayer mode.
+In terms of game mechanics, an innovative idea will guide future work: using QR codes to store predefined 
+puzzles. I hope to present the game’s levels in the form of a Player Handbook and explore the feasibility of this 
+model in VR‑based entertainment and education. If possible, I aim to extend this concept into an MR‑based 
+experience—for example, generating Tiles on the real‑world floor, embedding the Container into physical 
+walls, and loading puzzles simply by tapping on printed pages. Such an approach would undoubtedly enrich 
+the user experience and enhance interaction among different users.
+Figure 10. QR code detection 
+ 
+Week
+Tasks
+Description
+1
+-
+ 
+2
+-
+ 
+3
+Proposal
+ 
+4
+Proposal & Base Frame & Hub
+Prototype
+1. Establish the project baseline: URP, XR Interaction
+Toolkit, input mapping (grab/rotate/pointer).
+2.Hub scene v0: placeholder for 2-3 portals, scene loading
+(Additive), a "home portal" for returning to the Hub.
+3.Performance budget and template: target 90Hz (72Hz if
+necessary), fixed render resolution, baked lighting,
+platform settings (Quest 3).
+4.Version control and continuous integration: Git
+(branching conventions)
+5
+Grid System
+Grid System/Tile/Bit System
+• Implement grid system (0/1 state).
+• Add tile placement (snap-to-grid).
+• Implement path checking (DFS/BFS).
+6
+Limits
+• Add Obstacle Tiles (non-placeable).
+• Introduce limited tile inventory.
+• Add error feedback (red highlight, vibration).<br/>
+7
+Logic tiles
+• Add Logic tile (toggle 0 ↔ 1).
+• Add usage limits per level.
+• Add optional timer for scoring.
+8
+Hub Polish + Achievements +
+Light Narrative
+• Hub update with Quest Scroll showing objectives.
+• Add basic SFX/particle feedback for wins.
+• Add local achievement system (JSON).
+9
+UX Test +
+Interaction/Performance
+Improvements
+• Conduct small usability test (1–3 users).
+• Improve grab/snap feel (thresholds, smoothing).
+• Fix common issues (misplacement, slow TEST cycle).
+• Optimize performance (batching, LOD, baking).
+10
+POC Finalization & Demo
+Preparation
+• Build playable POC APK.
+• Record video.
+• Write POC report
+11
+-
+ 
+12
+-
+ 
+7.Schedule
+ 
+Table 4. Timeline of POC implement
+Week
+Tasks
+Description
+1
+Multiplayer Core Setup
+• Implement Host/Client flow and synchronized scene loading.
+• Create a simple multiplayer lobby (Host Game / Join Game).
+• Ensure both players spawn correctly in the same VR space.
+2
+Tile Placement
+Synchronization
+• Synchronize tile placement across clients (grid updates must
+be network‑authoritative).
+• Implement turn‑based system
+• Add rejection rules for illegal moves
+3
+Win Conditions & Game
+Rules
+• Implement win‑condition logic
+• Add connected‑path checking
+• Add optional rule constraints
+4
+VR User Experience &
+Gameplay Feel
+• Improve clarity of turn‑switch feedback
+• Add multimodal feedback
+5
+Match Flow, Reset, & Session
+Stability
+• Implement full board reset + automatic first‑player swap.
+• Handle network errors
+6
+Final Polish & Multiplayer
+MVP Build
+• Multi‑device testing for reliability
+• Export final Multiplayer MVP build.
+Table 5. Timeline of POC implement
+ 
+8.References
+ 
+Nacke, L. E., & Deterding, S. (2017). The maturing of gamification research. Computers in Human Behavior, 71, 
+450–454. https://doi.org/10.1016/j.chb.2016.11.062.
+Bouchrika, I., Harrati, N., Wanick, V., & Wills, G. (2019). Exploring the impact of gamification on student 
+engagement and involvement with e-learning systems. Interactive Learning Environments, 29(8), 1244–1257. http
+s://doi.org/10.1080/10494820.2019.1623267.
+Kim, K. G., Oertel, C., Dobricki, M., Olsen, J. K., Coppi, A. E., Cattaneo, A., & Dillenbourg, P. (2020). Using 
+immersive virtual reality to support designing skills in vocational education. British Journal of Educational 
+Technology, 51(6), 2199–2213. https://doi.org/10.1111/bjet.13026.
+Lampropoulos, G., Keramopoulos, E., & Diamantaras, K. (2020). Enhancing the functionality of augmented 
+reality using deep learning, semantic web and knowledge graphs: A review. Visual Informatics, 4(1), 32–42. http
+s://doi.org/10.1016/j.visinf.2020.01.001
+Freina, L., & Ott, M. (2015). A literature review on immersive virtual reality in education: State of the art and 
+perspectives. The International Scientific Conference Elearning and Software for Education, 1–8.
+Psotka, J. (1995). Immersive training systems: Virtual reality and education and training. Instructional Science, 
+23(5–6), 405–431. https://doi.org/10.1007/BF00896880.
+Ryan, M. L. (2015). Narrative as virtual reality 2: Revisiting immersion and interactivity in literature and electronic 
+media. JHU.
+Sherman, W. R., & Craig, A. B. (2003). Understanding virtual reality—interface, application, and design. Presence: 
+Teleoperators and Virtual Environments, 12(4), 441–442. https://doi.org/10.1162/105474603322391668.
+Biocca, F., & Delaney, B. (1995). Immersive virtual reality technology. Communication in the Age of Virtual Reality, 
+15(32), 127–157. https://doi.org/10.4324/9781410603128.
+Blascovich, J., & Bailenson, J. (2011). Infinite reality: Avatars, eternal life, new worlds, and the dawn of the virtual 
+revolution. William Morrow & Co.
+Bronack, S., Riedl, R., & Tashner, J. (2006). Learning in the zone: A social constructivist framework for distance 
+education in a 3-dimensional virtual world. Interactive Learning Environments, 14(3), 219–232. https://doi.org/10.
+1080/10494820600909157.
+Dickey, M. D. (2005). Brave new (interactive) worlds: A review of the design affordances and constraints of two 
+3D virtual worlds as interactive learning environments. Interactive Learning Environments, 13(1–2), 121–137. http
+s://doi.org/10.1080/10494820500173714.
+Dalgarno, B., Lee, M. J., Carlson, L., Gregory, S., & Tynan, B. (2011). An Australian and New Zealand scoping 
+study on the use of 3D immersive virtual worlds in higher education. Australasian Journal of Educational 
+Technology. https://doi.org/10.14742/ajet.978
+Radianti, J., Majchrzak, T. A., Fromm, J., & Wohlgenannt, I. (2020). A systematic review of immersive virtual 
+reality applications for higher education: Design elements, lessons learned, and research agenda. Computers & 
+Education, 147, 103778. https://doi.org/10.1016/j.compedu.2019.103778.
+Annetta, L., Mangrum, J., Holmes, S., Collazo, K., & Cheng, M. T. (2009). Bridging realty to virtual reality: 
+Investigating gender effect and student engagement on learning through video game play in an elementary 
+school classroom. International Journal of Science Education, 31(8), 1091–1113. https://doi.org/10.1080/0950069
+0801968656.
+Hu-Au, E., & Lee, J. J. (2017). Virtual reality in education: A tool for learning in the experience age. International 
+Journal of Innovation in Education, 4(4), 215–226. https://doi.org/10.1504/IJIIE.2017.091481.
+Martín-Gutiérrez, J., Mora, C. E., Añorbe-Díaz, B., & González-Marrero, A. (2017). Virtual technologies trends in 
+education. Eurasia Journal of Mathematics Science and Technology Education, 13(2), 469–486. https://doi.org/10.1
+2973/eurasia.2017.00626a.
+Olmos, E., Cavalcanti, J. F., Soler, J. L., Contero, M., & Alcañiz, M. (2018). Mobile virtual reality: A promising 
+technology to change the way we learn and teach. In Mobile and ubiquitous learning (pp. 95–106). Springer. http
+s://doi.org/10.1007/978-981-10-6144-8_6.
+Merchant, Z., Goetz, E. T., Cifuentes, L., Keeney-Kennicutt, W., & Davis, T. J. (2014). Effectiveness of virtual 
+reality-based instruction on students learning outcomes in k-12 and higher education: A meta-analysis. 
+Computers & Education, 70, 29–40. https://doi.org/10.1016/j.compedu.2013.07.033.
+Planey, J., Trencevski, D., Kelle, S. (2026). Lowering the Barriers for Designing Immersive Learning 
+Environments: ImmersityXR Framework. In: Krüger, J.M., et al. Immersive Learning Research Network. iLRN 
+2025. Communications in Computer and Information Science, vol 2598. Springer, Cham. https://doi.org/10.100
+7/978-3-031-98080-0_19
+SimLab Soft, “12+ Free VR Educational Quests,” 2025. Available: https://www.simlab-soft.com/blog/boost-learni
+ng-with-stem-12-free-vr-educational-quests-for-classrooms-students/    
+Papamitsiou, Z., Petersen, S.A., Psyllaki, C., Lamvik, G., Torvatn, H. (2025). On the Design of Gamified Learning 
+Analytics for Immersive Virtual Reality Games. In: Schönbohm, A., et al. Games and Learning Alliance. GALA 
+2024. Lecture Notes in Computer Science, vol 15348. Springer, Cham. https://doi.org/10.1007/978-3-031-78269
+-5_11
+Futuclass, “Top 80 Educational VR Games,” 2025. Available: https://futuclass.com/blog/educational_vr_games/    
+MEL Science, “MEL VR Science Simulations,” 2025. Available: https://melscience.com/US-en/vr/     
+VRLab Academy, “Virtual Laboratories,” 2025. Available: https://www.vrlabacademy.com/   
+ 
