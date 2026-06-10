@@ -59,7 +59,7 @@ public class GridSocket : MonoBehaviour
 
 	private void OnHoverEntered(HoverEnterEventArgs args)
 	{
-		Debug.Log($"[GridSocket] HoverEnter idx={_index}");
+		// Debug.Log($"[GridSocket] HoverEnter idx={_index}");
 		var tile = args.interactableObject.transform.GetComponent<TileBase>();
 		if (tile == null) return;
 
@@ -71,7 +71,7 @@ public class GridSocket : MonoBehaviour
 
 	private void OnHoverExited(HoverExitEventArgs args)
 	{
-		Debug.Log($"[GridSocket] HoverExit  idx={_index}");
+		// Debug.Log($"[GridSocket] HoverExit  idx={_index}");
 		var tile = args.interactableObject.transform.GetComponent<TileBase>();
 		if (tile == null) return;
 
@@ -82,7 +82,7 @@ public class GridSocket : MonoBehaviour
 
 	private void OnSelectEntered(SelectEnterEventArgs args)
 	{
-		Debug.Log($"[GridSocket] SelectEnter idx={_index}");
+		// Debug.Log($"[GridSocket] SelectEnter idx={_index}");
 		var go = args.interactableObject.transform.gameObject;
 		var tile = go.GetComponent<TileBase>();
 		if (tile == null) { Reject(go); return; }
@@ -92,9 +92,9 @@ public class GridSocket : MonoBehaviour
 			HardSnap(tile);
 
 
-			// 关键：清零速度，避免松手后有残留动量
+			// 关键：清零速度，避免松手后有残留动量（仅非 kinematic）
 			var rb = tile.GetComponent<Rigidbody>();
-			if (rb) { rb.linearVelocity = Vector3.zero; rb.angularVelocity = Vector3.zero; }
+			if (rb && !rb.isKinematic) { rb.linearVelocity = Vector3.zero; rb.angularVelocity = Vector3.zero; }
 
 
 			// 真正落位（由容器完成：节点占用、位置对齐、Tile.OnPlaced）
@@ -115,9 +115,10 @@ public class GridSocket : MonoBehaviour
 
 	private void Reject(GameObject go)
 	{
-		if (_socket.hasSelection) _socket.EndManualInteraction();
+		if (_socket.hasSelection && _socket.isPerformingManualInteraction)
+			_socket.EndManualInteraction();
 		var rb = go.GetComponent<Rigidbody>();
-		if (rb) rb.AddForce(Vector3.up * 0.5f, ForceMode.VelocityChange);
+		if (rb && !rb.isKinematic) rb.AddForce(Vector3.up * 0.5f, ForceMode.VelocityChange);
 		// TODO: 可加红色闪烁/短震
 	}
 
