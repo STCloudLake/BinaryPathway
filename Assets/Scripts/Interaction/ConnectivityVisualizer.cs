@@ -32,6 +32,11 @@ public class ConnectivityVisualizer : MonoBehaviour
 	[Header("����")]
 	public bool debugLogs = false;
 
+	/// <summary>
+	/// Fires when connectivity state changes. true = connected, false = disconnected.
+	/// </summary>
+	public event System.Action<bool> OnConnectivityChanged;
+
 	private Renderer _renderer;
 	private float _timeSinceLastCheck;
 	private bool _lastConnectivityState = false;
@@ -102,6 +107,9 @@ public class ConnectivityVisualizer : MonoBehaviour
 		if (targetMat != null && _renderer != null)
 		{
 			_renderer.material = targetMat;
+
+			// Fire event for external listeners (e.g. GameManager)
+			OnConnectivityChanged?.Invoke(isConnected);
 		}
 	}
 

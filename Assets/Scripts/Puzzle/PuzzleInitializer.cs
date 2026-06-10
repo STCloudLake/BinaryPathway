@@ -39,6 +39,10 @@ public class PuzzleInitializer : MonoBehaviour
 	[Tooltip("���Ϊtrue���Զ���GridContainer����ʱִ�г�ʼ��")]
 	public bool autoInitializeOnStart = true;
 
+	[Header("路径移除（可玩性）")]
+	[Tooltip("初始化后随机移除路径上多少比例的Tile，让玩家补全")]
+	[Range(0, 1)] public float pathRemovalRatio = 0.4f;
+
 	[Header("����")]
 	public bool debugLogs = false;
 
@@ -55,52 +59,54 @@ public class PuzzleInitializer : MonoBehaviour
 	/// <summary>
 	/// ��ʼ��ƴͼ��������
 	/// </summary>
-	public void InitializePuzzle()
+public void InitializePuzzle()
 	{
 		if (gridContainer == null)
 		{
-			Debug.LogError("[PuzzleInitializer] GridContainer δָ��");
+			Debug.LogError("[PuzzleInitializer] GridContainer 未指定");
 			return;
 		}
 
 		if (!gridContainer.InBounds(startIndex) || !gridContainer.InBounds(goalIndex))
 		{
-			Debug.LogError("[PuzzleInitializer] �����յ㳬������Χ");
+			Debug.LogError("[PuzzleInitializer] 起点或终点超出范围");
 			return;
 		}
 
 		if (pathTilePrefab == null || emptyTilePrefab == null)
 		{
-			Debug.LogError("[PuzzleInitializer] ·�����λTile prefabδָ��");
+			Debug.LogError("[PuzzleInitializer] 路径或空位Tile prefab未指定");
 			return;
 		}
 
-		// 1) ����·��
 		_currentPath = GeneratePath(startIndex, goalIndex);
 		if (_currentPath == null || _currentPath.Count == 0)
 		{
-			Debug.LogError("[PuzzleInitializer] �޷����ɴ���㵽�յ��·��");
+			Debug.LogError("[PuzzleInitializer] 无法生成路径");
 			return;
 		}
 
 		if (debugLogs)
-			Debug.Log($"[PuzzleInitializer] ����·�������� {_currentPath.Count}");
+			Debug.Log($"[PuzzleInitializer] 路径长度: {_currentPath.Count}");
 
-		// 2) �����������·����pathTile��������emptyTile
 		FillGrid(_currentPath);
 
-		// 3) ���ñ��
-		if (startMarker != null)
-		{
+		// 随机移除部分路径Tile，让玩家补全
+		RemoveRandomPathTiles();
+
+		// 设置标记 — 自动创建球形标记
+		if (startMarker == null)
+			startMarker = CreateProceduralMarker("StartMarker", Color.green, startIndex, "START");
+		else
 			startMarker.transform.position = gridContainer.GetWorldPos(startIndex);
-		}
-		if (goalMarker != null)
-		{
+
+		if (goalMarker == null)
+			goalMarker = CreateProceduralMarker("GoalMarker", Color.red, goalIndex, "GOAL");
+		else
 			goalMarker.transform.position = gridContainer.GetWorldPos(goalIndex);
-		}
 
 		if (debugLogs)
-			Debug.Log("[PuzzleInitializer] ƴͼ��ʼ�����");
+			Debug.Log("[PuzzleInitializer] 拼图初始化完成");
 	}
 
 	/// <summary>
@@ -328,6 +334,53 @@ public class PuzzleInitializer : MonoBehaviour
 		{
 			int randomIndex = Random.Range(0, i + 1);
 			(list[i], list[randomIndex]) = (list[randomIndex], list[i]);
+		}
+	}
+
+	/// <summary>
+	/// 创建程序化球形标记（起点/终点）
+	/// </summary>
+	private GameObject CreateProceduralMarker(string name, Color color, GridIndex index, string label)
+	{
+		if (gridContainer == null || !gridContainer.InBounds(index))
+			return null;
+
+		var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+		go.name = name;
+		go.transform.position = gridContainer.GetWorldPos(index) + Vector3.up * 0.15f;
+		go.transform.localScale = Vector3.one * 0.12f;
+
+		var renderer = go.GetComponent<Renderer>();
+		var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+		mat.color = color;
+		renderer.material = mat;
+
+		return go;
+	}
+
+	/// <summary>
+	/// 随机移除路径上的部分Tile，让玩家补全。排除起点和终点。
+	/// </summary>
+	private void RemoveRandomPathTiles()
+	{
+		if (_currentPath == null || _currentPath.Count <= 2) return;
+		if (pathRemovalRatio <= 0f) return;
+
+		var removableTiles = new System.Collections.Generic.List<GridIndex>(_currentPath);
+		removableTiles.Remove(startIndex);
+		removableTiles.Remove(goalIndex);
+
+		int removeCount = Mathf.RoundToInt(removableTiles.Count * Mathf.Clamp01(pathRemovalRatio));
+		if (removeCount <= 0) return;
+
+		ShuffleList(removableTiles);
+
+		for (int i = 0; i < removeCount && i < removableTiles.Count; i++)
+		{
+			var idx = removableTiles[i];
+			if (debugLogs)
+				Debug.Log($"[PuzzleInitializer] 移除路径Tile: {idx}");
+			gridContainer.Remove(idx);
 		}
 	}
 

@@ -21,6 +21,11 @@ public class GridContainer : MonoBehaviour
 	[Header("调试")]
 	public bool debugConnectivityLogs = false;
 
+	/// <summary>Fired after a tile is successfully placed on the grid.</summary>
+	public event System.Action<TileBase, GridIndex> OnTilePlaced;
+	/// <summary>Fired after a tile is successfully removed from the grid.</summary>
+	public event System.Action<TileBase, GridIndex> OnTileRemoved;
+
 	[Header("�ڽ������")]
 	public bool allowDiagonals2D = false;
 	public bool allowDiagonals3D = false; // Ĭ�� 6 �ڽ�
@@ -331,6 +336,7 @@ public class GridContainer : MonoBehaviour
 		tile.transform.position = n.worldPos;
 		tile.transform.rotation = Quaternion.identity; // ���賯��
 		tile.OnPlaced(this, i);
+			OnTilePlaced?.Invoke(tile, i);
 		return true;
 	}
 
@@ -342,6 +348,7 @@ public class GridContainer : MonoBehaviour
 		n.occupied = false;
 		n.placedTile = null;
 		if (tile != null) tile.OnRemoved(this, i);
+			OnTileRemoved?.Invoke(tile, i);
 
 		//SetNodeMaterial(i, defaultMat);
 		return true;
