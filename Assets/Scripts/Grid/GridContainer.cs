@@ -314,9 +314,17 @@ public class GridContainer : MonoBehaviour
 	public bool InBounds(GridIndex i) =>
 		i.x >= 0 && i.x < width && i.y >= 0 && i.y < height && i.z >= 0 && i.z < layers;
 
-	public GridNode GetNode(GridIndex i) => InBounds(i) ? _nodes[i.x, i.y, i.z] : null;
+public GridNode GetNode(GridIndex i)
+	{
+		if (_nodes == null) return null;
+		return InBounds(i) ? _nodes[i.x, i.y, i.z] : null;
+	}
 
-	public Vector3 GetWorldPos(GridIndex i) => GetNode(i)?.worldPos ?? Vector3.zero;
+public Vector3 GetWorldPos(GridIndex i)
+	{
+		if (_nodes == null) return Vector3.zero;
+		return GetNode(i)?.worldPos ?? Vector3.zero;
+	}
 
 	public bool CanPlace(GridIndex i, TileBase tile)
 	{

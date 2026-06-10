@@ -141,28 +141,33 @@ public class ConnectivityVisualizer : MonoBehaviour
 	}
 
 #if UNITY_EDITOR
+#if UNITY_EDITOR
 	private void OnDrawGizmos()
 	{
 		if (gridContainer == null) return;
 
-		// ���������յ�
+		// Avoid calling GetWorldPos during domain reload / grid rebuild
+		if (!gridContainer.InBounds(startIndex) || !gridContainer.InBounds(goalIndex))
+			return;
+
 		Vector3 startPos = gridContainer.GetWorldPos(startIndex);
 		Vector3 goalPos = gridContainer.GetWorldPos(goalIndex);
 
-		// ������㣨��ɫ��
+		// Check positions are valid (non-zero when bounds pass)
+		if (startPos == Vector3.zero && goalPos == Vector3.zero) return;
+
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireSphere(startPos, 0.05f);
 
-		// �����յ㣨��ɫ��
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere(goalPos, 0.05f);
 
-		// ����������
 		if (_lastStateKnown)
 		{
 			Gizmos.color = _lastConnectivityState ? Color.green : Color.red;
 			Gizmos.DrawLine(startPos, goalPos);
 		}
 	}
+#endif
 #endif
 }
