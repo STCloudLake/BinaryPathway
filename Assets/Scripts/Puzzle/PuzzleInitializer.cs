@@ -356,7 +356,7 @@ public void InitializePuzzle()
 	/// <summary>
 	/// 创建程序化球形标记（起点/终点）
 	/// </summary>
-	private GameObject CreateProceduralMarker(string name, Color color, GridIndex index, string label)
+private GameObject CreateProceduralMarker(string name, Color color, GridIndex index, string label)
 	{
 		if (gridContainer == null || !gridContainer.InBounds(index))
 			return null;
@@ -366,10 +366,12 @@ public void InitializePuzzle()
 		go.transform.position = gridContainer.GetWorldPos(index) + Vector3.up * 0.15f;
 		go.transform.localScale = Vector3.one * 0.12f;
 
+		// Use the primitive's default material (avoids Shader.Find failures)
 		var renderer = go.GetComponent<Renderer>();
-		var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-		mat.color = color;
-		renderer.material = mat;
+		if (renderer != null && renderer.material != null)
+		{
+			renderer.material.color = color;
+		}
 
 		return go;
 	}
