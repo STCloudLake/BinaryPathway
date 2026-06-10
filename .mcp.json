@@ -1,16 +1,7 @@
 {
   "mcpServers": {
     "unityMCP": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "mcpforunityserver",
-        "mcp-for-unity",
-        "--transport",
-        "stdio",
-        "--default-instance",
-        "BinaryPathway"
-      ]
+      "url": "http://127.0.0.1:8080/mcp"
     }
   }
 }
