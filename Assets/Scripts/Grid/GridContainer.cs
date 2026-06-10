@@ -354,38 +354,36 @@ public class GridContainer : MonoBehaviour
 		return true;
 	}
 
+
+	// 缓存的 BFS 容器，避免每次分配
+	private readonly Queue<GridIndex> _bfsQueue = new Queue<GridIndex>();
+	private readonly HashSet<GridIndex> _bfsVisited = new HashSet<GridIndex>();
 	// ��ͨ�ԣ����� value==1 �ĸ�����Ϊ��ͨ�нڵ㣨�ɰ�����չ��
-	public bool CheckConnectivity(GridIndex start, GridIndex goal)
+public bool CheckConnectivity(GridIndex start, GridIndex goal)
 	{
-		Debug.Log("ִ��CheckConnectivity");
 		if (!InBounds(start) || !InBounds(goal)) return false;
-		Debug.LogFormat("��� {0}���յ� {1}", start, goal);
 		var s = GetNode(start);
 		var g = GetNode(goal);
-		Debug.LogFormat("���ڵ� {0}���յ�ڵ� {1}", s, g);
 		if (s == null || g == null) return false;
-		Debug.LogFormat("���ڵ� {0}�ǿգ��յ�ڵ� {1}�ǿ�", s, g);
-		Debug.LogFormat("���ռ�� {0}���յ�ռ�� {1}", s.placedTile == null, g.placedTile == null);
-		Debug.LogFormat("���ֵ {0}���յ�ֵ {1}", s.placedTile?.Value, g.placedTile?.Value);
 		if (!IsOne(s) || !IsOne(g)) return false;
-		Debug.Log("������յ���Ч");
-		var q = new Queue<GridIndex>();
-		var visited = new HashSet<GridIndex>();
 
-		visited.Add(start);
-		q.Enqueue(start);
+		_bfsQueue.Clear();
+		_bfsVisited.Clear();
 
-		while (q.Count > 0)
+		_bfsVisited.Add(start);
+		_bfsQueue.Enqueue(start);
+
+		while (_bfsQueue.Count > 0)
 		{
-			var cur = q.Dequeue();
+			var cur = _bfsQueue.Dequeue();
 			if (cur.Equals(goal)) return true;
 
 			foreach (var nb in GetNeighbors(cur))
 			{
-				if (!visited.Contains(nb) && IsOne(GetNode(nb)))
+				if (!_bfsVisited.Contains(nb) && IsOne(GetNode(nb)))
 				{
-					visited.Add(nb);
-					q.Enqueue(nb);
+					_bfsVisited.Add(nb);
+					_bfsQueue.Enqueue(nb);
 				}
 			}
 		}

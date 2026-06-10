@@ -88,16 +88,14 @@ public class GameManager : MonoBehaviour
 
     void HandleTilePlaced(TileBase tile, GridIndex index)
     {
-        _moveCount++;
-        UpdateMovesDisplay();
-        Debug.Log($"[GameManager] Tile placed at {index}, moves: {_moveCount}");
+    _moveCount++;
+    UpdateMovesDisplay();
     }
 
-    void HandleTileRemoved(TileBase tile, GridIndex index)
+	void HandleTileRemoved(TileBase tile, GridIndex index)
     {
-        _moveCount++;
-        UpdateMovesDisplay();
-        Debug.Log($"[GameManager] Tile removed from {index}, moves: {_moveCount}");
+     _moveCount++;
+    UpdateMovesDisplay();
     }
 
     void SetState(GameState newState)
