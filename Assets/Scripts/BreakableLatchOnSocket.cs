@@ -20,7 +20,7 @@ public class BreakableLatchOnSocket : MonoBehaviour
 	void Awake()
 	{
 		socket = GetComponent<XRSocketInteractor>();
-		im =FindFirstObjectByTypepe<XRInteractionManager>();
+		im = FindFirstObjectByType<XRInteractionManager>();;
 		socket.selectEntered.AddListener(OnSelectEntered);
 	}
 
