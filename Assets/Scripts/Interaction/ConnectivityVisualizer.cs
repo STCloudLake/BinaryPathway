@@ -48,7 +48,7 @@ public class ConnectivityVisualizer : MonoBehaviour
 		if (gridContainer == null)
 		{
 			Debug.LogWarning($"[{name}] GridContainer δָ���������Զ�����...");
-			gridContainer = FindObjectOfType<GridContainer>();
+			ggridContainerainer = gridContainer = FindFirstObjectByType<GridContainer>();
 			if (gridContainer != null)
 				Debug.Log($"[{name}] �Զ��ҵ� GridContainer: {gridContainer.name}");
 		}
