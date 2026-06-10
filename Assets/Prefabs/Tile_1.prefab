@@ -4394,6 +4394,9 @@ GameObject:
   - component: {fileID: 1560758384636290894}
   - component: {fileID: 6653401173731524023}
   - component: {fileID: 1402512372938673539}
+  - component: {fileID: 1142758415842076103}
+  - component: {fileID: 4070459473214047901}
+  - component: {fileID: 5594270879308670743}
   m_Layer: 0
   m_Name: Tile_1
   m_TagString: Untagged
@@ -4766,7 +4769,7 @@ MonoBehaviour:
   _distanceThreshold: 0.01
   _snapPoseTransform: {fileID: 0}
   _defaultInteractable: {fileID: 0}
-  _timeOutInteractable: {fileID: 0}
+  _timeOutInteractable: {fileID: 6653401173731524023}
   _timeOut: 0
 --- !u!114 &6653401173731524023
 MonoBehaviour:
@@ -4799,6 +4802,83 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26cb0a0cb13965347b765a3a9356dd69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Oculus.Interaction::Oculus.Interaction.InteractableTriggerBroadcaster
+--- !u!114 &1142758415842076103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8123866627091296203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb743c666c1ab34e928a0b62c2fa862, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Oculus.Interaction::Oculus.Interaction.GrabInteractor
+  _activeState: {fileID: 0}
+  _interactableFilters: []
+  _candidateTiebreaker: {fileID: 0}
+  _maxIterationsPerFrame: 3
+  _data: {fileID: 0}
+  _selector: {fileID: 0}
+  _rigidbody: {fileID: 0}
+  _grabCenter: {fileID: 0}
+  _grabTarget: {fileID: 0}
+  _velocityCalculator: {fileID: 0}
+--- !u!114 &4070459473214047901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8123866627091296203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0529a9671a3b6a74fab00c4d05312c64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Oculus.Interaction::Oculus.Interaction.DistanceReticles.ReticleDataIcon
+  _renderer: {fileID: 0}
+  _customIcon: {fileID: 0}
+  _snappiness: 0
+--- !u!114 &5594270879308670743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8123866627091296203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4c6cba82e9f3c84f80041e0d2741ef6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Oculus.Interaction::Oculus.Interaction.AutoMoveTowardsTargetProvider
+  _travellingData:
+    _travelSpeed: 1
+    _useFixedTravelTime: 0
+    _travelCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  _pointableElement: {fileID: 0}
 --- !u!1 &8135100670628045080
 GameObject:
   m_ObjectHideFlags: 0
