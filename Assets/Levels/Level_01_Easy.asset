@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f324ac3c6986647bad38df01a84f2b, type: 3}
+  m_Name: Level_01_Easy
+  m_EditorClassIdentifier: Assembly-CSharp::LevelData
+  gridWidth: 4
+  gridHeight: 4
+  gridLayers: 1
+  startIndex:
+    x: 0
+    y: 0
+    z: 0
+  goalIndex:
+    x: 3
+    y: 3
+    z: 0
+  pathAlgorithm: 0
+  pathRemovalRatio: 0.3
+  maxMoves: 0
+  timeLimit: 0
+  levelName: Level 1 - Easy
+  description: A gentle introduction. Small 4x4 grid with a straight path and only
+    30% tiles removed.
+  levelNumber: 1

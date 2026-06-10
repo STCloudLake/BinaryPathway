@@ -4384,11 +4384,12 @@ GameObject:
   - component: {fileID: 9213724435145162725}
   - component: {fileID: 3541948456406984066}
   - component: {fileID: 8530487681595240103}
-  - component: {fileID: 1964755125304057151}
   - component: {fileID: 1688166527250589599}
   - component: {fileID: 1744056918525943066}
   - component: {fileID: 4914084351233239744}
   - component: {fileID: 1535245869004117808}
+  - component: {fileID: 289924513432185468}
+  - component: {fileID: 3640836371656670229}
   m_Layer: 0
   m_Name: Tile_0
   m_TagString: Untagged
@@ -4582,18 +4583,6 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
---- !u!114 &1964755125304057151
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8123866627091296203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a529d728651d3664ba1408f4ab534931, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TileOne
 --- !u!114 &1688166527250589599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4705,6 +4694,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLinkNode
   reconnectCooldown: 0.2
+--- !u!114 &289924513432185468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8123866627091296203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fd9ff9ba3cf4004da2cec9fca609e09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TileLabel
+  labelHeight: 0.12
+  labelSize: 0.06
+--- !u!114 &3640836371656670229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8123866627091296203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a30dcde57b28cc4c9630b7273ca8a69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TileZero
 --- !u!1 &8135100670628045080
 GameObject:
   m_ObjectHideFlags: 0

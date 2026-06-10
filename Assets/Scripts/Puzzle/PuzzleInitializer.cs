@@ -36,6 +36,10 @@ public class PuzzleInitializer : MonoBehaviour
 	[Tooltip("·���㷨��0=ֱ�����·��, 1=���·��, 2=�Թ�ʽ")]
 	[Range(0, 2)] public int pathAlgorithm = 1;
 
+	[Header("Level Config (optional)")]
+	[Tooltip("Optional ScriptableObject that overrides all parameters below")]
+	public LevelData levelData;
+
 	[Tooltip("���Ϊtrue���Զ���GridContainer����ʱִ�г�ʼ��")]
 	public bool autoInitializeOnStart = true;
 
@@ -63,38 +67,50 @@ public void InitializePuzzle()
 	{
 		if (gridContainer == null)
 		{
-			Debug.LogError("[PuzzleInitializer] GridContainer 未指定");
+			Debug.LogError("[PuzzleInitializer] GridContainer not assigned");
 			return;
+		}
+
+		// Apply LevelData if present (overrides inspector fields)
+		if (levelData != null)
+		{
+			gridContainer.width = levelData.gridWidth;
+			gridContainer.height = levelData.gridHeight;
+			gridContainer.layers = levelData.gridLayers;
+			startIndex = levelData.startIndex;
+			goalIndex = levelData.goalIndex;
+			pathAlgorithm = levelData.pathAlgorithm;
+			pathRemovalRatio = levelData.pathRemovalRatio;
 		}
 
 		if (!gridContainer.InBounds(startIndex) || !gridContainer.InBounds(goalIndex))
 		{
-			Debug.LogError("[PuzzleInitializer] 起点或终点超出范围");
+			Debug.LogError("[PuzzleInitializer] Start or goal out of bounds");
 			return;
 		}
 
 		if (pathTilePrefab == null || emptyTilePrefab == null)
 		{
-			Debug.LogError("[PuzzleInitializer] 路径或空位Tile prefab未指定");
+			Debug.LogError("[PuzzleInitializer] Tile prefabs not assigned");
 			return;
 		}
 
 		_currentPath = GeneratePath(startIndex, goalIndex);
 		if (_currentPath == null || _currentPath.Count == 0)
 		{
-			Debug.LogError("[PuzzleInitializer] 无法生成路径");
+			Debug.LogError("[PuzzleInitializer] Failed to generate path");
 			return;
 		}
 
 		if (debugLogs)
-			Debug.Log($"[PuzzleInitializer] 路径长度: {_currentPath.Count}");
+			Debug.Log($"[PuzzleInitializer] Path length: {_currentPath.Count}");
 
 		FillGrid(_currentPath);
 
-		// 随机移除部分路径Tile，让玩家补全
+		// Randomly remove path tiles for playability
 		RemoveRandomPathTiles();
 
-		// 设置标记 — 自动创建球形标记
+		// Setup markers
 		if (startMarker == null)
 			startMarker = CreateProceduralMarker("StartMarker", Color.green, startIndex, "START");
 		else
@@ -106,7 +122,7 @@ public void InitializePuzzle()
 			goalMarker.transform.position = gridContainer.GetWorldPos(goalIndex);
 
 		if (debugLogs)
-			Debug.Log("[PuzzleInitializer] 拼图初始化完成");
+			Debug.Log("[PuzzleInitializer] Puzzle initialized");
 	}
 
 	/// <summary>
