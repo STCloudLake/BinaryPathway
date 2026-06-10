@@ -1,0 +1,65 @@
+# ============================================
+# Unity Generated
+# ============================================
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# ============================================
+# IDE / Editor
+# ============================================
+.vs/
+.vscode/
+*.csproj
+*.sln
+*.user
+*.userosscache
+*.suo
+*.pidb
+*.userprefs
+.idea/
+*.DotSettings.user
+[Jj]et[Bb]rains/
+
+# ============================================
+# OS Generated
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ============================================
+# Memory Captures
+# ============================================
+*.memsnap
+*.memsnap.meta
+
+# ============================================
+# Asset meta files should NOT be ignored
+# ============================================
+# *.meta is intentionally NOT listed — Unity requires them
+
+# ============================================
+# Crash / Recovery files
+# ============================================
+Crashlytics/
+*_BackUpThisFolder_ButDontShipItWithYourGame/
+
+# ============================================
+# Package Manager
+# ============================================
+/Packages/package-lock.json
+
+# ============================================
+# Unity Cloud / DevOps
+# ============================================
+[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
