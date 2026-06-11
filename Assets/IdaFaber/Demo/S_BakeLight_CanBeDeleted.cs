@@ -9,9 +9,11 @@
 
 
 
+using UnityEngine;
+
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace EzBake.Editor {
@@ -50,5 +52,6 @@ namespace EzBake.Editor {
             }
         }
     }
-    #endif
+#endif
 }
+#endif
