@@ -1,21 +1,21 @@
 // Scripts/GrabJointManager.cs
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
+
 
 /// <summary>
 /// One-hand grab → joints hold tiles together.
 /// Two-hand grab on connected tiles → joint breaks → tiles separate.
 /// </summary>
-[RequireComponent(typeof(XRGrabInteractable))]
+[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
 public class GrabJointManager : MonoBehaviour
 {
     private static HashSet<GrabJointManager> _grabbed = new HashSet<GrabJointManager>();
-    private XRGrabInteractable _grab;
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _grab;
 
     void Awake()
     {
-        _grab = GetComponent<XRGrabInteractable>();
+        _grab = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         _grab.selectEntered.AddListener(_ => _grabbed.Add(this));
         _grab.selectExited.AddListener(_ => _grabbed.Remove(this));
     }
