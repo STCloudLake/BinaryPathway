@@ -30,9 +30,9 @@ public class TileLabel : MonoBehaviour
         textGO.transform.SetParent(canvasGO.transform, false);
         _label = textGO.AddComponent<Text>();
         try { _label.font = Font.CreateDynamicFontFromOSFont("Arial", 14); } catch { }
-        _label.fontSize = 36;
+        _label.fontSize = 24;
         _label.alignment = TextAnchor.MiddleCenter;
-        _label.rectTransform.sizeDelta = new Vector2(200, 50);
+        _label.rectTransform.sizeDelta = new Vector2(80, 30);
         _label.horizontalOverflow = HorizontalWrapMode.Overflow;
 
         var initial = _tile.GetCellState();
@@ -53,7 +53,7 @@ public class TileLabel : MonoBehaviour
             canvasT.rotation = Quaternion.LookRotation(canvasT.position - _cam.transform.position);
 
             float dist = Vector3.Distance(canvasT.position, _cam.transform.position);
-            float scale = Mathf.Clamp(dist * 0.008f, 0.002f, 0.02f);
+            float scale = Mathf.Clamp(dist * 0.004f, 0.002f, 0.005f);
             canvasT.localScale = Vector3.one * scale;
         }
 
