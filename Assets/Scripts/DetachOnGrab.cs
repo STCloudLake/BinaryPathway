@@ -4,21 +4,19 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
 /// <summary>
-/// On grab: disables Rigidbody+Collider on all connected children → moves as one.
-/// On release: re-enables them and copies velocity.
-/// Children detach on their own grab.
+/// On grab: suspends child rigidbodies (no physics jitter) but keeps colliders active
+/// (so second hand can still grab children). Children detach on their own grab.
 /// </summary>
-[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
+[RequireComponent(typeof(XRGrabInteractable))]
 public class DetachOnGrab : MonoBehaviour
 {
-    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _grab;
+    private XRGrabInteractable _grab;
     private Rigidbody _rb;
-    private List<Rigidbody> _childRbs = new List<Rigidbody>();
-    private List<Collider> _childCols = new List<Collider>();
+    private List<Rigidbody> _suspendedRbs = new List<Rigidbody>();
 
     void Awake()
     {
-        _grab = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        _grab = GetComponent<XRGrabInteractable>();
         _rb = GetComponent<Rigidbody>();
         _grab.selectEntered.AddListener(OnGrabbed);
         _grab.selectExited.AddListener(OnReleased);
@@ -32,54 +30,42 @@ public class DetachOnGrab : MonoBehaviour
 
     void OnGrabbed(SelectEnterEventArgs args)
     {
-        // Detach from parent (someone else grabbed us)
+        // Detach from parent (second hand pulls me away)
         if (transform.parent != null)
         {
             transform.SetParent(null, true);
         }
 
-        // Disable physics on all DIRECT children (connected tiles parented to us)
-        _childRbs.Clear();
-        _childCols.Clear();
-
-        foreach (Transform child in transform)
-        {
-            if (child == transform) continue;
-            var crb = child.GetComponent<Rigidbody>();
-            if (crb != null && !crb.isKinematic)
-            {
-                crb.isKinematic = false;
-                crb.detectCollisions = false;
-                crb.useGravity = false;
-                _childRbs.Add(crb);
-            }
-            foreach (var col in child.GetComponentsInChildren<Collider>())
-            {
-                if (col.enabled) { col.enabled = false; _childCols.Add(col); }
-            }
-        }
-
-        // Keep our own RB active and non-kinematic so XR grab can move it
+        // Re-enable my own physics (might have been disabled by parent's grab)
         _rb.isKinematic = false;
         _rb.detectCollisions = true;
+
+        // Suspend child rigidbodies (keep colliders ON for raycasting)
+        _suspendedRbs.Clear();
+        foreach (Transform child in transform)
+        {
+            var crb = child.GetComponent<Rigidbody>();
+            if (crb != null)
+            {
+                crb.isKinematic = true;      // No physics sim
+                crb.detectCollisions = false; // No collision response
+                // Collider stays ON → second hand can still raycast-grab it
+                _suspendedRbs.Add(crb);
+            }
+        }
     }
 
     void OnReleased(SelectExitEventArgs args)
     {
-        // Re-enable child physics
-        foreach (var crb in _childRbs)
+        // Restore suspended children
+        foreach (var crb in _suspendedRbs)
         {
             if (crb == null) continue;
+            crb.isKinematic = false;
             crb.detectCollisions = true;
-            crb.useGravity = false; // tiles float
             crb.linearVelocity = _rb.linearVelocity;
             crb.angularVelocity = _rb.angularVelocity;
         }
-
-        foreach (var col in _childCols)
-            if (col != null) col.enabled = true;
-
-        _childRbs.Clear();
-        _childCols.Clear();
+        _suspendedRbs.Clear();
     }
 }
