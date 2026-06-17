@@ -7,8 +7,8 @@ using System.Collections;
 [RequireComponent(typeof(XRSocketInteractor))]
 public class BreakableLatchOnSocket : MonoBehaviour
 {
-    public float breakForce = 80f;
-    public float breakTorque = 80f;
+    public float breakForce = 25f;
+    public float breakTorque = 25f;
     public bool useConfigurable = true;
     public bool jointEnableCollision = false;
     public float projectionDistance = 0.005f;
@@ -63,7 +63,7 @@ public class BreakableLatchOnSocket : MonoBehaviour
             j.connectedBody = hostRb;
             j.autoConfigureConnectedAnchor = true;
             j.xMotion = j.yMotion = j.zMotion = ConfigurableJointMotion.Locked;
-            j.angularXMotion = j.angularYMotion = j.angularZMotion = ConfigurableJointMotion.Locked;
+            j.angularXMotion = j.angularYMotion = j.angularZMotion = ConfigurableJointMotion.Free;
             j.breakForce = breakForce;
             j.breakTorque = breakTorque;
             j.enableCollision = jointEnableCollision;

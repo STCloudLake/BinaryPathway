@@ -30,7 +30,11 @@ public class TileConnector : MonoBehaviour
         _myTile = GetComponent<TileBase>();
         _linkNode = GetComponent<BreakableLinkNode>();
 
-        if (faceSockets == null || faceSockets.Length == 0)
+        // Auto-detect face sockets from Sockets/ child (only if array is empty or all-null)
+        bool allNull = true;
+        if (faceSockets != null)
+            foreach (var s in faceSockets) if (s != null) { allNull = false; break; }
+        if (faceSockets == null || allNull)
             faceSockets = GetComponentsInChildren<XRSocketInteractor>();
 
         foreach (var socket in faceSockets)
