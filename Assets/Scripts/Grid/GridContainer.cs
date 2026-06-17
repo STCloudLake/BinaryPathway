@@ -64,13 +64,11 @@ public class GridContainer : MonoBehaviour
 	//}
 
 
-	private void Start()
+	private void Awake()
 	{
-		// ����ʱ��֤������
-		if (Application.isPlaying)
-		{
-			RegenerateSafeRuntime();
-		}
+		// Ensure grid is allocated before any Start() runs
+		RegenerateSafeRuntime();
+		_needsRebuild = false; // Prevent EditorApplication.delayCall from nuking the grid on play mode start
 	}
 
 
