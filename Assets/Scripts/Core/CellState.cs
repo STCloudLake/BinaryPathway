@@ -100,6 +100,17 @@ public struct CellState
     /// <summary>Whether BFS should treat this cell as a conductive path element.</summary>
     public bool IsConductive() => type == CellStateType.PureValue && value == 1;
 
+    public override bool Equals(object obj) =>
+        obj is CellState other &&
+        type == other.type &&
+        value == other.value &&
+        logic == other.logic;
+
+    public override int GetHashCode() => (type, value, logic).GetHashCode();
+
+    public static bool operator ==(CellState a, CellState b) => a.Equals(b);
+    public static bool operator !=(CellState a, CellState b) => !a.Equals(b);
+
     public override string ToString() => type switch
     {
         CellStateType.PureValue      => $"[{value}]",

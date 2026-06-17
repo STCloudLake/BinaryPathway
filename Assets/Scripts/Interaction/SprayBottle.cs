@@ -46,10 +46,15 @@ public class SprayBottle : MonoBehaviour
                     || OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch);
 #endif
 
-        bool isSpraying = isHeld && sprayTrigger;
+        // In Editor, allow spray without hold for testing
+        bool isSpraying = sprayTrigger;
+#if UNITY_ANDROID && !UNITY_EDITOR
+        isSpraying = isHeld && sprayTrigger;
+#endif
 
         if (isSpraying && !_wasSpraying && _sprayCooldown <= 0f)
         {
+            Debug.Log("[SprayBottle] SPRAY TRIGGERED! Forward=" + transform.forward);
             PerformSpray();
             _sprayCooldown = 0.3f;
         }
@@ -60,7 +65,7 @@ public class SprayBottle : MonoBehaviour
         _wasSpraying = isSpraying;
     }
 
-    void PerformSpray()
+    public void PerformSpray()
     {
         Vector3 origin = transform.position + transform.forward * 0.1f;
         Vector3 direction = transform.forward;
