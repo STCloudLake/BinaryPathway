@@ -29,11 +29,21 @@ public class SprayBottle : MonoBehaviour
         // Multiple triggers for Editor testing
         bool trigger = Input.GetKeyDown(KeyCode.F)
                     || Input.GetKeyDown(KeyCode.Space)
-                    || Input.GetMouseButtonDown(1); // right-click
+                    || Input.GetMouseButtonDown(1);
 
         if (trigger)
         {
-            Debug.Log($"[SprayBottle] TRIGGER! Remaining={_remainingUses} pos={transform.position}");
+            Debug.Log($"[SprayBottle] TRIGGER! Remaining={_remainingUses}");
+            PerformSpray();
+        }
+    }
+
+    void OnGUI()
+    {
+        if (IsEmpty) return;
+        if (GUI.Button(new Rect(10, 10, 120, 40), "SPRAY (F)"))
+        {
+            Debug.Log($"[SprayBottle] GUI TRIGGER!");
             PerformSpray();
         }
     }
