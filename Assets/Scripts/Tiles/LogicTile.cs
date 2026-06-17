@@ -57,7 +57,8 @@ public class LogicTile : TileBase
     public Renderer targetRenderer;
     public Material matZero;
     public Material matOne;
-    public Material matLogicWaiting; // for ValueWithLogic or LogicOnly states
+    public Material matLogicWaiting; // for LogicOnly state (gray transparent)
+    public Material matValueWithLogic; // for ValueWithLogic state (orange transparent)
 
     protected virtual void Awake()
     {
@@ -72,7 +73,7 @@ public class LogicTile : TileBase
         Material target = _stateType switch
         {
             CellStateType.PureValue      => (_value == 1) ? matOne : matZero,
-            CellStateType.ValueWithLogic => matLogicWaiting,
+            CellStateType.ValueWithLogic => matValueWithLogic ?? matLogicWaiting,
             CellStateType.LogicOnly      => matLogicWaiting,
             _ => matZero
         };

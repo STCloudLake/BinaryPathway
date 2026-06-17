@@ -2,10 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// World-space Canvas text label showing CellState above tile.
-/// Uses UI/Text (not TMP) for maximum Quest compatibility.
-/// </summary>
 [RequireComponent(typeof(TileBase))]
 public class TileLabel : MonoBehaviour
 {
@@ -13,35 +9,30 @@ public class TileLabel : MonoBehaviour
     private Text _label;
     private Canvas _canvas;
     private CellState _lastState;
+    private Camera _cam;
 
     void Start()
     {
         _tile = GetComponent<TileBase>();
+        _cam = Camera.main ?? FindFirstObjectByType<Camera>();
 
-        // Create world-space Canvas
         var canvasGO = new GameObject("LabelCanvas");
         canvasGO.transform.SetParent(transform, false);
-        canvasGO.transform.localPosition = new Vector3(0, 0.25f, 0);
-        canvasGO.transform.localRotation = Quaternion.identity;
-        canvasGO.transform.localScale = Vector3.one * 0.003f; // Scale for readability (~3mm/unit)
+        canvasGO.transform.localPosition = new Vector3(0, 0.16f, 0); // Just above tile surface
 
         _canvas = canvasGO.AddComponent<Canvas>();
         _canvas.renderMode = RenderMode.WorldSpace;
-        _canvas.worldCamera = Camera.main ?? FindFirstObjectByType<Camera>();
-
+        _canvas.worldCamera = _cam;
         var rect = _canvas.GetComponent<RectTransform>();
         rect.sizeDelta = new Vector2(200, 50);
 
-        // Text
         var textGO = new GameObject("Text");
         textGO.transform.SetParent(canvasGO.transform, false);
         _label = textGO.AddComponent<Text>();
-        try { _label.font = Font.CreateDynamicFontFromOSFont("Arial", 14); }
-        catch { /* use default */ }
-        _label.fontSize = 28;
+        try { _label.font = Font.CreateDynamicFontFromOSFont("Arial", 14); } catch { }
+        _label.fontSize = 36;
         _label.alignment = TextAnchor.MiddleCenter;
         _label.rectTransform.sizeDelta = new Vector2(200, 50);
-        _label.color = Color.white;
         _label.horizontalOverflow = HorizontalWrapMode.Overflow;
 
         var initial = _tile.GetCellState();
@@ -51,27 +42,26 @@ public class TileLabel : MonoBehaviour
 
     void Update()
     {
-        // Billboard
-        if (_canvas != null)
+        if (_cam == null) _cam = Camera.main ?? FindFirstObjectByType<Camera>();
+        if (_canvas == null || _tile == null) return;
+
+        // Billboard + distance scale
+        if (_cam != null)
         {
-            var cam = _canvas.worldCamera;
-            if (cam == null) cam = Camera.main ?? FindFirstObjectByType<Camera>();
-            if (cam != null)
-            {
-                _canvas.worldCamera = cam;
-                _canvas.transform.rotation = Quaternion.LookRotation(
-                    _canvas.transform.position - cam.transform.position);
-            }
+            _canvas.worldCamera = _cam;
+            var canvasT = _canvas.transform;
+            canvasT.rotation = Quaternion.LookRotation(canvasT.position - _cam.transform.position);
+
+            float dist = Vector3.Distance(canvasT.position, _cam.transform.position);
+            float scale = Mathf.Clamp(dist * 0.008f, 0.002f, 0.02f);
+            canvasT.localScale = Vector3.one * scale;
         }
 
-        // Poll state
-        if (_tile == null) return;
         var currentState = _tile.GetCellState();
         if (!currentState.Equals(_lastState))
         {
             _lastState = currentState;
             RefreshDisplay(currentState);
-            Debug.Log($"[TileLabel] {name}: {currentState}");
         }
     }
 
@@ -86,7 +76,7 @@ public class TileLabel : MonoBehaviour
                 break;
             case CellStateType.ValueWithLogic:
                 _label.text = state.value + " " + LogicSymbol(state.logic);
-                _label.color = new Color(1f, 0.5f, 0f);
+                _label.color = new Color(1f, 0.6f, 0f);
                 break;
             case CellStateType.LogicOnly:
                 _label.text = LogicSymbol(state.logic);

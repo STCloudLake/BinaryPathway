@@ -5032,6 +5032,7 @@ MonoBehaviour:
   matZero: {fileID: 2100000, guid: 55e5d4c44b819af49ae79eb9cb03d039, type: 2}
   matOne: {fileID: 2100000, guid: f8df8427b192c6c42975d41a89054d96, type: 2}
   matLogicWaiting: {fileID: 2100000, guid: 631ddde638a37fb4abc5d2861af7e079, type: 2}
+  matValueWithLogic: {fileID: 2100000, guid: 8aedb68b3d2f881468c14a3d2332e326, type: 2}
 --- !u!114 &6555206270262901454
 MonoBehaviour:
   m_ObjectHideFlags: 0
