@@ -105,7 +105,7 @@ public class SprayBottle : MonoBehaviour
             logicTile.ApplyNot();
             Debug.Log($"[SprayBottle] NOT applied to LogicTile: {logicTile.CellState}");
         }
-        else if (tile is TileToggle toggle)
+        else if (tile is ToggleTile toggle)
         {
             toggle.Toggle();
             Debug.Log($"[SprayBottle] NOT applied to ToggleTile: now {toggle.Value}");
