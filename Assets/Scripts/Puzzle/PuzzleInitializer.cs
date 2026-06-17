@@ -456,7 +456,7 @@ private GameObject CreateProceduralMarker(string name, Color color, GridIndex in
 	/// <summary>
 	/// Spawn logic blocks from prefabs near the grid for player pickup.
 	/// </summary>
-	private void SpawnLogicBlocks()
+private void SpawnLogicBlocks()
 	{
 		if (spawnedLogicTypes == null || spawnedLogicTypes.Length == 0)
 		{

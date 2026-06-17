@@ -1,11 +1,14 @@
+// Scripts/Tiles/TileLabel.cs
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 /// <summary>
-/// Manages a world-space label on a Tile showing its current value (0/1).
-/// Green = value 1 (conductive), Red = value 0 (blocked).
-/// Hides during grab interaction, reappears after release.
+/// Dynamic world-space label showing tile's current CellState:
+/// PureValue: "0" (red) or "1" (green)
+/// ValueWithLogic: "v L" (e.g. "1 AND" in orange — waiting)
+/// LogicOnly: "L" (e.g. "AND" in grey — waiting)
+/// Hides during grab, auto-updates on CellState change.
 /// </summary>
 [RequireComponent(typeof(TileBase))]
 public class TileLabel : MonoBehaviour
@@ -14,15 +17,19 @@ public class TileLabel : MonoBehaviour
     public float labelHeight = 0.12f;
     public float labelSize = 0.06f;
 
+    private LogicTile _logicTile;
     private TileBase _tile;
     private TMPro.TextMeshPro _label;
     private GameObject _labelGO;
     private XRGrabInteractable _grab;
-    private Renderer _labelRenderer;
+
+    // Track last state to avoid per-frame allocations
+    private CellState _lastState;
 
     void Start()
     {
         _tile = GetComponent<TileBase>();
+        _logicTile = _tile as LogicTile;
         _grab = GetComponent<XRGrabInteractable>();
 
         CreateLabel();
@@ -45,9 +52,13 @@ public class TileLabel : MonoBehaviour
 
     void Update()
     {
-        if (_labelGO != null && _labelGO.activeSelf && _tile != null)
+        if (_labelGO == null || !_labelGO.activeSelf || _tile == null) return;
+
+        var currentState = _tile.GetCellState();
+        if (!currentState.Equals(_lastState))
         {
-            UpdateLabelText();
+            _lastState = currentState;
+            RefreshDisplay(currentState);
         }
     }
 
@@ -59,32 +70,58 @@ public class TileLabel : MonoBehaviour
         _labelGO.transform.localRotation = Quaternion.identity;
 
         _label = _labelGO.AddComponent<TMPro.TextMeshPro>();
-        _label.text = _tile != null ? _tile.Value.ToString() : "?";
         _label.fontSize = labelSize;
         _label.alignment = TMPro.TextAlignmentOptions.Center;
-        _label.color = (_tile != null && _tile.Value == 1) ? Color.green : Color.red;
 
-        // Add adaptive scaling + billboard
+        var initial = _tile != null ? _tile.GetCellState() : CellState.PureValue(0);
+        _lastState = initial;
+        RefreshDisplay(initial);
+
         var scaler = _labelGO.AddComponent<FinalLabelScaler>();
         scaler.sizeOnScreen = 0.04f;
         scaler.faceCamera = true;
     }
 
-    void UpdateLabelText()
+    /// <summary>
+    /// Update label text and color based on CellState.
+    /// </summary>
+    void RefreshDisplay(CellState state)
     {
-        if (_tile == null || _label == null) return;
-        int val = _tile.Value;
-        _label.text = val.ToString();
-        _label.color = (val == 1) ? Color.green : Color.red;
+        if (_label == null) return;
+
+        switch (state.type)
+        {
+            case CellStateType.PureValue:
+                _label.text = state.value.ToString();
+                _label.color = state.value == 1 ? new Color(0.2f, 0.9f, 0.2f) : new Color(0.9f, 0.2f, 0.2f);
+                break;
+
+            case CellStateType.ValueWithLogic:
+                _label.text = state.value + " " + LogicSymbol(state.logic);
+                _label.color = new Color(1f, 0.6f, 0.1f); // orange — waiting
+                break;
+
+            case CellStateType.LogicOnly:
+                _label.text = LogicSymbol(state.logic);
+                _label.color = new Color(0.5f, 0.5f, 0.5f); // grey — waiting for value
+                break;
+        }
     }
 
-    void HideLabel()
+    /// <summary>
+    /// Convert LogicOp to a compact symbol string.
+    /// </summary>
+    static string LogicSymbol(LogicOp op) => op switch
     {
-        if (_labelGO != null) _labelGO.SetActive(false);
-    }
+        LogicOp.AND  => "AND",
+        LogicOp.NAND => "NAND",
+        LogicOp.OR   => "OR",
+        LogicOp.NOR  => "NOR",
+        LogicOp.XOR  => "XOR",
+        LogicOp.XNOR => "XNOR",
+        _ => "?"
+    };
 
-    void ShowLabel()
-    {
-        if (_labelGO != null) _labelGO.SetActive(true);
-    }
+    void HideLabel() { if (_labelGO != null) _labelGO.SetActive(false); }
+    void ShowLabel() { if (_labelGO != null) _labelGO.SetActive(true); }
 }

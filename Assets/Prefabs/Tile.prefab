@@ -2119,6 +2119,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1789007646328304531}
+  - component: {fileID: 3808413313933203112}
   m_Layer: 4
   m_Name: Audio
   m_TagString: Untagged
@@ -2143,6 +2144,103 @@ Transform:
   - {fileID: 1714303024783521892}
   m_Father: {fileID: 9213724435145162725}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &3808413313933203112
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4010886735377970156}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &4054189057414580880
 GameObject:
   m_ObjectHideFlags: 0
@@ -2915,7 +3013,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 103.445, y: -153.005}
-  m_SizeDelta: {x: 142.89, y: 286.01}
+  m_SizeDelta: {x: 142.89, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5807193748258285986
 CanvasRenderer:
@@ -3176,7 +3274,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 206.89, y: 306.01}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &5807193748912035634
 Canvas:
@@ -4471,7 +4569,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
   m_InteractionManager: {fileID: 0}
   m_Colliders:
-  - {fileID: 0}
+  - {fileID: 2310378019981973471}
   m_InteractionLayers:
     m_Bits: 1
   m_DistanceCalculationMode: 1
@@ -4754,7 +4852,7 @@ MonoBehaviour:
   _snapPoseTransform: {fileID: 0}
   _defaultInteractable: {fileID: 0}
   _timeOutInteractable: {fileID: 0}
-  _timeOut: 2
+  _timeOut: 0
 --- !u!114 &6542267409598578329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4782,10 +4880,10 @@ MonoBehaviour:
   _stateType: 2
   _value: 0
   _logicOp: 0
-  targetRenderer: {fileID: 0}
-  matZero: {fileID: 0}
-  matOne: {fileID: 0}
-  matLogicWaiting: {fileID: 0}
+  targetRenderer: {fileID: 9175585670922814633}
+  matZero: {fileID: 2100000, guid: 55e5d4c44b819af49ae79eb9cb03d039, type: 2}
+  matOne: {fileID: 2100000, guid: f8df8427b192c6c42975d41a89054d96, type: 2}
+  matLogicWaiting: {fileID: 2100000, guid: 631ddde638a37fb4abc5d2861af7e079, type: 2}
 --- !u!114 &6555206270262901454
 MonoBehaviour:
   m_ObjectHideFlags: 0
