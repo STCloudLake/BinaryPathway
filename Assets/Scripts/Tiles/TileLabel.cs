@@ -2,50 +2,54 @@
 using UnityEngine;
 
 /// <summary>
-/// Dynamic label showing tile's CellState above the tile.
-/// Creates own TextMeshPro child at startup.
+/// Shows tile CellState above the tile using Unity TextMesh (not Pro).
+/// Billboard-facing, fixed world scale.
 /// </summary>
 [RequireComponent(typeof(TileBase))]
 public class TileLabel : MonoBehaviour
 {
-    public float labelHeight = 0.15f;
-    public float labelSize = 0.06f;
-
     private TileBase _tile;
-    private TMPro.TextMeshPro _label;
+    private TextMesh _label;
     private GameObject _labelGO;
     private CellState _lastState;
+    private Camera _cam;
 
     void Start()
     {
         _tile = GetComponent<TileBase>();
+        _cam = Camera.main ?? FindFirstObjectByType<Camera>();
         CreateLabel();
     }
 
     void CreateLabel()
     {
-        _labelGO = new GameObject("TileLabel");
+        _labelGO = new GameObject("Label3D");
         _labelGO.transform.SetParent(transform, false);
-        _labelGO.transform.localPosition = Vector3.up * labelHeight;
+        _labelGO.transform.localPosition = new Vector3(0, 0.18f, 0);
         _labelGO.transform.localRotation = Quaternion.identity;
+        _labelGO.transform.localScale = Vector3.one * 0.02f;
 
-        _label = _labelGO.AddComponent<TMPro.TextMeshPro>();
-        _label.fontSize = labelSize;
-        _label.alignment = TMPro.TextAlignmentOptions.Center;
-        _label.rectTransform.sizeDelta = new Vector2(0.3f, 0.1f);
+        _label = _labelGO.AddComponent<TextMesh>();
+        _label.fontSize = 50;
+        _label.characterSize = 0.02f;
+        _label.anchor = TextAnchor.MiddleCenter;
+        _label.color = Color.white;
 
         var initial = _tile != null ? _tile.GetCellState() : CellState.PureValue(0);
         _lastState = initial;
         RefreshDisplay(initial);
-
-        var scaler = _labelGO.AddComponent<FinalLabelScaler>();
-        scaler.sizeOnScreen = 0.04f;
-        scaler.faceCamera = true;
     }
 
     void Update()
     {
         if (_label == null || _tile == null) return;
+
+        // Billboard
+        if (_cam != null)
+            _labelGO.transform.rotation = Quaternion.LookRotation(
+                _labelGO.transform.position - _cam.transform.position);
+
+        // Poll cell state
         var currentState = _tile.GetCellState();
         if (!currentState.Equals(_lastState))
         {
@@ -62,15 +66,15 @@ public class TileLabel : MonoBehaviour
         {
             case CellStateType.PureValue:
                 _label.text = state.value.ToString();
-                _label.color = state.value == 1 ? new Color(0.2f, 0.9f, 0.2f) : new Color(0.9f, 0.2f, 0.2f);
+                _label.color = state.value == 1 ? Color.green : Color.red;
                 break;
             case CellStateType.ValueWithLogic:
                 _label.text = state.value + " " + LogicSymbol(state.logic);
-                _label.color = new Color(1f, 0.6f, 0.1f);
+                _label.color = new Color(1f, 0.5f, 0f); // orange
                 break;
             case CellStateType.LogicOnly:
                 _label.text = LogicSymbol(state.logic);
-                _label.color = new Color(0.5f, 0.5f, 0.5f);
+                _label.color = Color.gray;
                 break;
         }
     }
