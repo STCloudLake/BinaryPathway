@@ -53,7 +53,7 @@ public class TileLabel : MonoBehaviour
             canvasT.rotation = Quaternion.LookRotation(canvasT.position - _cam.transform.position);
 
             float dist = Vector3.Distance(canvasT.position, _cam.transform.position);
-            float scale = Mathf.Clamp(dist * 0.004f, 0.002f, 0.005f);
+            float scale = Mathf.Clamp(dist * 0.004f, 0.002f, 0.008f);
             canvasT.localScale = Vector3.one * scale;
         }
 

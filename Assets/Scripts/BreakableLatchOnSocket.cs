@@ -44,8 +44,12 @@ public class BreakableLatchOnSocket : MonoBehaviour
         var insRb = inserted.GetComponent<Rigidbody>();
         if (!hostRb || !insRb) return;
 
-        // Skip if already connected or just released (prevent re-selection loop)
-        if (HasJointTo(inserted.gameObject, hostRb)) return;
+        // If already connected, just release socket (don't create another joint)
+        if (HasJointTo(inserted.gameObject, hostRb))
+        {
+            StartCoroutine(ExitSocketDeferred(interactable));
+            return;
+        }
         if (inserted.gameObject == _lastInserted && Time.time - _lastExitTime < 0.5f) return;
 
         // Skip joint if tiles are compatible for merge (TileConnector will handle absorption)
