@@ -76,7 +76,28 @@ public class LogicTile : TileBase
             _ => matZero
         };
         if (target != null)
+        {
             targetRenderer.material = target;
+            // Set emission glow so state is visible from all angles
+            Color emit;
+            switch (_stateType)
+            {
+                case CellStateType.PureValue:
+                    emit = _value == 1 ? Color.green * 1.5f : Color.red * 1.5f;
+                    break;
+                case CellStateType.ValueWithLogic:
+                    emit = new Color(1f, 0.4f, 0f) * 1.5f;
+                    break;
+                case CellStateType.LogicOnly:
+                    emit = new Color(0.3f, 0.3f, 0.3f) * 1.5f;
+                    break;
+                default:
+                    emit = Color.black;
+                    break;
+            }
+            target.EnableKeyword("_EMISSION");
+            target.SetColor("_EmissionColor", emit);
+        }
     }
 
     /// <summary>
