@@ -170,12 +170,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 15
-  breakTorque: 15
-  useConfigurable: 1
-  jointEnableCollision: 0
-  projectionDistance: 0.005
-  projectionAngle: 1
 --- !u!1 &106682492827920404
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,12 +316,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 15
-  breakTorque: 15
-  useConfigurable: 1
-  jointEnableCollision: 0
-  projectionDistance: 0.005
-  projectionAngle: 1
 --- !u!1 &823361760787628570
 GameObject:
   m_ObjectHideFlags: 0
@@ -556,12 +544,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 15
-  breakTorque: 15
-  useConfigurable: 1
-  jointEnableCollision: 0
-  projectionDistance: 0.005
-  projectionAngle: 1
 --- !u!1 &1391457298796723171
 GameObject:
   m_ObjectHideFlags: 0
@@ -1150,12 +1132,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 15
-  breakTorque: 15
-  useConfigurable: 1
-  jointEnableCollision: 0
-  projectionDistance: 0.005
-  projectionAngle: 1
 --- !u!1 &2344636236596230059
 GameObject:
   m_ObjectHideFlags: 0
@@ -4308,12 +4284,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 15
-  breakTorque: 15
-  useConfigurable: 1
-  jointEnableCollision: 0
-  projectionDistance: 0.005
-  projectionAngle: 1
 --- !u!1 &7456622954961515177
 GameObject:
   m_ObjectHideFlags: 0
@@ -4642,7 +4612,7 @@ GameObject:
   - component: {fileID: 6542267409598578329}
   - component: {fileID: 2537874626597811835}
   - component: {fileID: 6555206270262901454}
-  - component: {fileID: 3466005643788879764}
+  - component: {fileID: 8849318149602212373}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -5050,7 +5020,7 @@ MonoBehaviour:
   blockWidth: 1
   blockHeight: 1
   cells: []
---- !u!114 &3466005643788879764
+--- !u!114 &8849318149602212373
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5059,9 +5029,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8123866627091296203}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83120dd9bf76b804ba2986b5709f2d99, type: 3}
+  m_Script: {fileID: 11500000, guid: 031e55f26fa81b1479e355cd040fc26d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GrabJointManager
+  m_EditorClassIdentifier: Assembly-CSharp::DetachOnGrab
 --- !u!1 &8135100670628045080
 GameObject:
   m_ObjectHideFlags: 0
@@ -5177,12 +5147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 15
-  breakTorque: 15
-  useConfigurable: 1
-  jointEnableCollision: 0
-  projectionDistance: 0.005
-  projectionAngle: 1
 --- !u!1 &8789075093435396628
 GameObject:
   m_ObjectHideFlags: 0

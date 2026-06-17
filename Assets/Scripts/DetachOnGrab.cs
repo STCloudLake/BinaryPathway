@@ -6,14 +6,14 @@ using UnityEngine.XR.Interaction.Toolkit;
 /// When this tile is grabbed, detach it from its parent.
 /// This allows individual tiles in a parented chain to be pulled apart.
 /// </summary>
-[RequireComponent(typeof(XRGrabInteractable))]
+[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
 public class DetachOnGrab : MonoBehaviour
 {
-    private XRGrabInteractable _grab;
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _grab;
 
     void Awake()
     {
-        _grab = GetComponent<XRGrabInteractable>();
+        _grab = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         _grab.selectEntered.AddListener(OnGrabbed);
     }
 
