@@ -27,6 +27,7 @@ MonoBehaviour:
   pathRemovalRatio: 0.3
   maxMoves: 0
   timeLimit: 0
+  sprayUses: 2
   levelName: Level 1 - Easy
   description: A gentle introduction. Small 4x4 grid with a straight path and only
     30% tiles removed.

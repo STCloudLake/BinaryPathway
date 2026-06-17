@@ -27,6 +27,7 @@ MonoBehaviour:
   pathRemovalRatio: 0.5
   maxMoves: 40
   timeLimit: 120
+  sprayUses: 1
   levelName: Level 3 - Hard
   description: Large 8x6 grid with complex maze. 50% path removal and time pressure.
   levelNumber: 3

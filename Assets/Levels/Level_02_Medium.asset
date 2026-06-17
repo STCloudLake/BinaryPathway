@@ -27,6 +27,7 @@ MonoBehaviour:
   pathRemovalRatio: 0.4
   maxMoves: 50
   timeLimit: 0
+  sprayUses: 1
   levelName: Level 2 - Medium
   description: Standard 6x6 maze. 40% path removal with move limit.
   levelNumber: 2
