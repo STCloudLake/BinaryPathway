@@ -48,6 +48,21 @@ public class BreakableLatchOnSocket : MonoBehaviour
         if (HasJointTo(inserted.gameObject, hostRb)) return;
         if (inserted.gameObject == _lastInserted && Time.time - _lastExitTime < 0.5f) return;
 
+        // Skip joint if tiles are compatible for merge (TileConnector will handle absorption)
+        var myTile = host.GetComponentInParent<TileBase>();
+        var otherTile = inserted.GetComponent<TileBase>();
+        if (myTile != null && otherTile != null)
+        {
+            var myCs = myTile.GetCellState();
+            var otherCs = otherTile.GetCellState();
+            // Skip joint if merge-compatible (TileConnector will absorb)
+            bool mergeCompatible = false;
+            if (myCs.type == CellStateType.LogicOnly && otherCs.type == CellStateType.PureValue) mergeCompatible = true;
+            if (myCs.type == CellStateType.ValueWithLogic && otherCs.type == CellStateType.PureValue) mergeCompatible = true;
+            if (otherCs.type == CellStateType.ValueWithLogic && myCs.type == CellStateType.PureValue) mergeCompatible = true;
+            if (mergeCompatible) return;
+        }
+
         // Snap to attach point
         var at = socket.attachTransform;
         if (at != null)
@@ -108,9 +123,11 @@ public class BreakableLatchOnSocket : MonoBehaviour
     IEnumerator ExitSocketDeferred(IXRSelectInteractable interactable)
     {
         yield return null;
-        if (socket != null && socket.hasSelection)
+        if (socket != null && socket.hasSelection && interactable != null)
         {
-            _lastInserted = ((interactable as Component)?.gameObject);
+            var comp = interactable as Component;
+            if (comp == null || comp.gameObject == null) yield break;
+            _lastInserted = comp.gameObject;
             _lastExitTime = Time.time;
             im.SelectExit((IXRSelectInteractor)socket, interactable);
         }

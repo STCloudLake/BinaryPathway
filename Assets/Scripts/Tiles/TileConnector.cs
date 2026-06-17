@@ -107,30 +107,37 @@ public class TileConnector : MonoBehaviour
     }
 
     /// <summary>
-    /// Destroy the value tile and its joints (physically absorbed into this tile).
+    /// Absorb a value tile into this logic tile. Disables XR, removes physics, destroys.
     /// </summary>
     void AbsorbTile(TileBase tile)
     {
         if (tile == null) return;
         var go = tile.gameObject;
 
-        // Remove all joints (from BreakableLatchOnSocket)
+        // 1. Disable XR interactables immediately to prevent re-entrancy
+        var xrg = go.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        if (xrg != null) { xrg.enabled = false; }
+
+        // 2. Disable all face sockets to stop select events
+        foreach (var s in go.GetComponentsInChildren<XRSocketInteractor>())
+            s.enabled = false;
+
+        // 3. Remove joints safely (find on self AND remove joints where this is connectedBody)
         foreach (var j in go.GetComponents<Joint>())
-            Destroy(j);
+        {
+            j.connectedBody = null; // Break connection first
+            DestroyImmediate(j);
+        }
 
-        // Remove Rigidbody to prevent physics artifacts
+        // 4. Remove physics components
         var rb = go.GetComponent<Rigidbody>();
-        if (rb != null) Destroy(rb);
-
-        // Remove Colliders to prevent interference
+        if (rb != null) DestroyImmediate(rb);
         foreach (var c in go.GetComponents<Collider>())
-            Destroy(c);
+            DestroyImmediate(c);
 
-        // Hide immediately
+        // 5. Hide and destroy
         go.SetActive(false);
-
-        // Destroy after a frame to let physics settle
-        Destroy(go, 0.05f);
+        DestroyImmediate(go);
     }
 
     void ApplyCellState(CellState newState)
