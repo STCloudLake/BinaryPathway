@@ -341,8 +341,9 @@ public Vector3 GetWorldPos(GridIndex i)
 		var n = GetNode(i);
 		n.occupied = true;
 		n.placedTile = tile;
+		n.cellState = tile.GetCellState(); // Sync CellState from tile
 		tile.transform.position = n.worldPos;
-		tile.transform.rotation = Quaternion.identity; // ���賯��
+		tile.transform.rotation = Quaternion.identity; // Align to grid
 		tile.OnPlaced(this, i);
 			OnTilePlaced?.Invoke(tile, i);
 		return true;
@@ -355,6 +356,7 @@ public Vector3 GetWorldPos(GridIndex i)
 		var tile = n.placedTile;
 		n.occupied = false;
 		n.placedTile = null;
+		n.cellState = CellState.PureValue(0); // Reset cell state on remove
 		if (tile != null) tile.OnRemoved(this, i);
 			OnTileRemoved?.Invoke(tile, i);
 
@@ -400,8 +402,74 @@ public bool CheckConnectivity(GridIndex start, GridIndex goal)
 
 	private bool IsOne(GridNode node)
 	{
-		if (node == null || !node.occupied || node.placedTile == null) return false;
-		return node.placedTile.Value == 1;
+		if (node == null || !node.occupied) return false;
+		// Use CellState for BFS — only PureValue(1) is conductive
+		return node.cellState.IsConductive();
+	}
+
+	/// <summary>
+	/// Place a LogicTile cell onto a grid node. Handles CellState-based logic
+	/// interaction with the existing grid state. Does NOT check bounds or conflicts
+	/// (caller is responsible). Used by LogicBlock.PlaceOnGrid().
+	/// </summary>
+	public void PlaceLogicCell(GridIndex i, LogicTile logicCell)
+	{
+		var node = GetNode(i);
+		if (node == null) return;
+
+		CellState incoming = logicCell.CellState;
+		CellState existing = node.cellState;
+
+		if (incoming.type == CellStateType.ValueWithLogic)
+		{
+			if (existing.type == CellStateType.PureValue)
+			{
+				// Compute: incoming.v L existing.v = result
+				int result = CellState.Compute(incoming.value, incoming.logic, existing.value);
+				node.cellState = CellState.PureValue(result);
+				if (debugConnectivityLogs)
+					Debug.Log($"[GridContainer] Logic merge at {i}: {incoming.value} {incoming.logic} {existing.value} = {result}");
+			}
+			else
+			{
+				// Existing is also waiting or logic-only — just overwrite
+				node.cellState = incoming;
+			}
+		}
+		else if (incoming.type == CellStateType.LogicOnly)
+		{
+			if (existing.type == CellStateType.PureValue)
+			{
+				// Capture: grid value becomes value for the logic
+				node.cellState = CellState.ValueWithLogic(existing.value, incoming.logic);
+			}
+			else
+			{
+				node.cellState = incoming;
+			}
+		}
+		else // PureValue
+		{
+			if (existing.type == CellStateType.PureValue)
+			{
+				// Both pure values — keep existing (incoming just attaches physically)
+			}
+			else
+			{
+				// Overwrite waiting/logic-only with pure value
+				node.cellState = incoming;
+			}
+		}
+
+		// Mark as occupied
+		node.occupied = true;
+		node.placedTile = logicCell;
+
+		// Position the LogicTile at the grid cell
+		logicCell.transform.position = node.worldPos;
+		logicCell.transform.rotation = Quaternion.identity;
+		logicCell.OnPlaced(this, i);
+		OnTilePlaced?.Invoke(logicCell, i);
 	}
 
 	public IEnumerable<GridIndex> GetNeighbors(GridIndex i)
