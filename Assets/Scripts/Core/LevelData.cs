@@ -29,6 +29,10 @@ public class LevelData : ScriptableObject
     [Tooltip("Time limit in seconds (0 = unlimited)")]
     [Min(0)] public float timeLimit = 0f;
 
+    [Header("Tools")]
+    [Tooltip("Number of SprayBottle (NOT) uses available in this level")]
+    [Min(0)] public int sprayUses = 1;
+
     [Header("Meta")]
     public string levelName = "Untitled";
     [TextArea(2, 4)]

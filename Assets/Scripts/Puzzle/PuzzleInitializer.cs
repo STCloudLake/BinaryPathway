@@ -21,6 +21,14 @@ public class PuzzleInitializer : MonoBehaviour
 	[Tooltip("�����λ��Tile��value=0��")]
 	public GameObject emptyTilePrefab;
 
+	[Header("Logic Block Prefabs")]
+	[Tooltip("Optional prefabs for logic blocks spawned in the scene")]
+	public GameObject[] logicBlockPrefabs;
+
+	[Header("SprayBottle")]
+	[Tooltip("Reference to the spray bottle in the scene (for NOT operation)")]
+	public SprayBottle sprayBottle;
+
 	[Header("������յ�")]
 	[Tooltip("���������������·����ʼ��")]
 	public GridIndex startIndex = new GridIndex(0, 0, 0);
@@ -81,6 +89,11 @@ public void InitializePuzzle()
 			goalIndex = levelData.goalIndex;
 			pathAlgorithm = levelData.pathAlgorithm;
 			pathRemovalRatio = levelData.pathRemovalRatio;
+			// Apply spray bottle uses from LevelData
+			if (sprayBottle != null && levelData.sprayUses > 0)
+			{
+				sprayBottle.Refill(levelData.sprayUses);
+			}
 		}
 
 		if (!gridContainer.InBounds(startIndex) || !gridContainer.InBounds(goalIndex))
@@ -120,6 +133,9 @@ public void InitializePuzzle()
 			goalMarker = CreateProceduralMarker("GoalMarker", Color.red, goalIndex, "GOAL");
 		else
 			goalMarker.transform.position = gridContainer.GetWorldPos(goalIndex);
+
+		// Spawn logic blocks for this level
+		SpawnLogicBlocks();
 
 		if (debugLogs)
 			Debug.Log("[PuzzleInitializer] Puzzle initialized");
@@ -430,6 +446,33 @@ private GameObject CreateProceduralMarker(string name, Color color, GridIndex in
 
 		// ���³�ʼ��
 		InitializePuzzle();
+	}
+
+	/// <summary>
+	/// Spawn logic blocks from prefabs near the grid for player pickup.
+	/// </summary>
+	private void SpawnLogicBlocks()
+	{
+		if (logicBlockPrefabs == null || logicBlockPrefabs.Length == 0)
+		{
+			if (debugLogs)
+				Debug.Log("[PuzzleInitializer] No logic block prefabs configured — skipping.");
+			return;
+		}
+
+		Vector3 gridCenter = gridContainer.GetWorldPos(
+			new GridIndex(gridContainer.width / 2, gridContainer.height / 2, 0));
+		Vector3 spawnOrigin = gridCenter + Vector3.back * (gridContainer.cellSize * gridContainer.height / 2f + 0.5f);
+
+		for (int i = 0; i < logicBlockPrefabs.Length; i++)
+		{
+			if (logicBlockPrefabs[i] == null) continue;
+			Vector3 spawnPos = spawnOrigin + Vector3.right * i * 0.4f;
+			var block = Instantiate(logicBlockPrefabs[i], spawnPos, Quaternion.identity);
+			block.name = logicBlockPrefabs[i].name;
+			if (debugLogs)
+				Debug.Log("[PuzzleInitializer] Spawned logic block: " + block.name + " at " + spawnPos);
+		}
 	}
 
 #if UNITY_EDITOR
