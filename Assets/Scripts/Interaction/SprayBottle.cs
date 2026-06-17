@@ -1,16 +1,14 @@
 // Scripts/Interaction/SprayBottle.cs
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 
 /// <summary>
-/// NOT-spray bottle tool. Point at any tile and press trigger to flip its value
-/// or logic operation. Limited uses per level (configured via LevelData.sprayUses).
+/// NOT-spray bottle tool. Uses Oculus ISDK Grabbable for hold detection
+/// and OVRInput/Space for trigger. Raycasts forward, applies NOT to hit tiles.
 /// </summary>
 public class SprayBottle : MonoBehaviour
 {
     [Header("Spray Config")]
     [Min(1)] public int maxUses = 3;
-    [Tooltip("Max spray distance in meters.")]
     public float sprayRange = 3f;
     public LayerMask sprayLayerMask = ~0;
 
@@ -21,44 +19,50 @@ public class SprayBottle : MonoBehaviour
     [Header("State")]
     [SerializeField] private int _remainingUses;
 
-    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _grabInteractable;
+    private Oculus.Interaction.Grabbable _grabbable;
+    private bool _wasSpraying;
+    private float _sprayCooldown;
 
     public int RemainingUses => _remainingUses;
     public bool IsEmpty => _remainingUses <= 0;
 
     void Awake()
     {
-        _grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        _grabbable = GetComponent<Oculus.Interaction.Grabbable>();
         _remainingUses = maxUses;
-
-        if (_grabInteractable != null)
-        {
-            _grabInteractable.activated.AddListener(OnActivated);
-        }
     }
 
-    void OnDestroy()
+    void Update()
     {
-        if (_grabInteractable != null)
-            _grabInteractable.activated.RemoveListener(OnActivated);
-    }
+        if (IsEmpty) return;
 
-    /// <summary>Called when the player pulls the trigger while holding the bottle.</summary>
-    void OnActivated(ActivateEventArgs args)
-    {
-        if (IsEmpty)
+        // Detect if bottle is held via Oculus ISDK grab
+        bool isHeld = _grabbable != null && _grabbable.SelectingPointsCount > 0;
+
+        // Trigger: Space (Editor) or Oculus Index Trigger (Quest)
+        bool sprayTrigger = Input.GetKey(KeyCode.Space);
+#if UNITY_ANDROID && !UNITY_EDITOR
+        sprayTrigger = OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch)
+                    || OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch);
+#endif
+
+        bool isSpraying = isHeld && sprayTrigger;
+
+        if (isSpraying && !_wasSpraying && _sprayCooldown <= 0f)
         {
-            Debug.Log("[SprayBottle] Empty — no uses remaining.");
-            return;
+            PerformSpray();
+            _sprayCooldown = 0.3f;
         }
 
-        PerformSpray();
+        if (!isSpraying)
+            _sprayCooldown = Mathf.Max(0f, _sprayCooldown - Time.deltaTime);
+
+        _wasSpraying = isSpraying;
     }
 
     void PerformSpray()
     {
-        // Raycast from the bottle nozzle (forward direction)
-        Vector3 origin = transform.position;
+        Vector3 origin = transform.position + transform.forward * 0.1f;
         Vector3 direction = transform.forward;
 
         if (Physics.Raycast(origin, direction, out RaycastHit hit, sprayRange, sprayLayerMask))
@@ -66,19 +70,13 @@ public class SprayBottle : MonoBehaviour
             var target = hit.collider.GetComponentInParent<TileBase>();
             if (target != null)
             {
-                ApplyNot(target);
-            }
-            else
-            {
-                // Check for LogicBlock at hit point
-                var block = hit.collider.GetComponentInParent<LogicBlock>();
-                if (block != null)
+                if (target is LogicTile logicTile)
                 {
-                    ApplyNotToBlock(block, hit.point);
+                    logicTile.ApplyNot();
+                    Debug.Log($"[SprayBottle] NOT: {logicTile.CellState}");
                 }
             }
 
-            // Visual feedback at hit point
             if (sprayParticles != null)
             {
                 sprayParticles.transform.position = hit.point;
@@ -87,57 +85,22 @@ public class SprayBottle : MonoBehaviour
         }
 
         _remainingUses--;
-        if (spraySound != null)
-            spraySound.Play();
-
-        Debug.Log($"[SprayBottle] Spray used. Remaining: {_remainingUses}");
-
-        if (IsEmpty)
-        {
-            Debug.Log("[SprayBottle] Bottle is now empty!");
-        }
+        if (spraySound != null) spraySound.Play();
+        Debug.Log($"[SprayBottle] Used. Remaining: {_remainingUses}");
+        if (IsEmpty) Debug.Log("[SprayBottle] Empty!");
     }
 
-    void ApplyNot(TileBase tile)
-    {
-        if (tile is LogicTile logicTile)
-        {
-            logicTile.ApplyNot();
-            Debug.Log($"[SprayBottle] NOT applied to LogicTile: {logicTile.CellState}");
-        }
-        else
-        {
-            // Tile without LogicTile (shouldn't happen with unified architecture)
-            Debug.Log($"[SprayBottle] Cannot NOT-flip tile: {tile.GetType().Name}");
-        }
-    }
-
-    void ApplyNotToBlock(LogicBlock block, Vector3 hitPoint)
-    {
-        // Find the closest cell in the block
-        LogicTile closest = null;
-        float minDist = float.MaxValue;
-        foreach (var cell in block.cells)
-        {
-            float d = Vector3.Distance(hitPoint, cell.transform.position);
-            if (d < minDist) { minDist = d; closest = cell; }
-        }
-        if (closest != null)
-            closest.ApplyNot();
-    }
-
-    /// <summary>Refill the bottle (for level restart or power-up).</summary>
     public void Refill(int uses)
     {
         _remainingUses = uses;
-        Debug.Log($"[SprayBottle] Refilled with {uses} uses.");
+        Debug.Log($"[SprayBottle] Refilled: {uses}");
     }
 
 #if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
-        Gizmos.DrawRay(transform.position, transform.forward * sprayRange);
+        Gizmos.DrawRay(transform.position + transform.forward * 0.1f, transform.forward * sprayRange);
     }
 #endif
 }
