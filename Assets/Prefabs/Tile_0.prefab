@@ -4739,7 +4739,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d263eb3b95f8b7c4e939c233a86fc58f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TileConnector
-  connectionRule: {fileID: 0}
   faceSockets:
   - {fileID: 0}
   - {fileID: 0}
@@ -4770,7 +4769,7 @@ MonoBehaviour:
   _snapPoseTransform: {fileID: 0}
   _defaultInteractable: {fileID: 0}
   _timeOutInteractable: {fileID: 2073740325412158140}
-  _timeOut: 0
+  _timeOut: 2
 --- !u!114 &2073740325412158140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4820,7 +4819,7 @@ MonoBehaviour:
   _maxIterationsPerFrame: 3
   _data: {fileID: 0}
   _selector: {fileID: 0}
-  _rigidbody: {fileID: 0}
+  _rigidbody: {fileID: 3541948456406984066}
   _grabCenter: {fileID: 0}
   _grabTarget: {fileID: 0}
   _velocityCalculator: {fileID: 0}
@@ -4836,7 +4835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0529a9671a3b6a74fab00c4d05312c64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Oculus.Interaction::Oculus.Interaction.DistanceReticles.ReticleDataIcon
-  _renderer: {fileID: 0}
+  _renderer: {fileID: 9175585670922814633}
   _customIcon: {fileID: 0}
   _snappiness: 0
 --- !u!114 &8510582077478719519

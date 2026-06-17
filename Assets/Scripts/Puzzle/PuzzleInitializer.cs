@@ -21,9 +21,9 @@ public class PuzzleInitializer : MonoBehaviour
 	[Tooltip("�����λ��Tile��value=0��")]
 	public GameObject emptyTilePrefab;
 
-	[Header("Logic Block Prefabs")]
-	[Tooltip("Optional prefabs for logic blocks spawned in the scene")]
-	public GameObject[] logicBlockPrefabs;
+	[Header("Logic Block Spawning")]
+	[Tooltip("Logic operation types to spawn (each becomes a LogicOnly block)")]
+	public LogicOp[] spawnedLogicTypes;
 
 	[Header("SprayBottle")]
 	[Tooltip("Reference to the spray bottle in the scene (for NOT operation)")]
@@ -453,10 +453,18 @@ private GameObject CreateProceduralMarker(string name, Color color, GridIndex in
 	/// </summary>
 	private void SpawnLogicBlocks()
 	{
-		if (logicBlockPrefabs == null || logicBlockPrefabs.Length == 0)
+		if (spawnedLogicTypes == null || spawnedLogicTypes.Length == 0)
 		{
 			if (debugLogs)
-				Debug.Log("[PuzzleInitializer] No logic block prefabs configured — skipping.");
+				Debug.Log("[PuzzleInitializer] No logic types configured — skipping.");
+			return;
+		}
+
+		// Use emptyTilePrefab as base — it has all interaction components (LogicTile, LogicBlock, XRGrab, etc.)
+		GameObject basePrefab = emptyTilePrefab != null ? emptyTilePrefab : pathTilePrefab;
+		if (basePrefab == null)
+		{
+			Debug.LogWarning("[PuzzleInitializer] No tile prefab available for logic block spawn.");
 			return;
 		}
 
@@ -464,12 +472,23 @@ private GameObject CreateProceduralMarker(string name, Color color, GridIndex in
 			new GridIndex(gridContainer.width / 2, gridContainer.height / 2, 0));
 		Vector3 spawnOrigin = gridCenter + Vector3.back * (gridContainer.cellSize * gridContainer.height / 2f + 0.5f);
 
-		for (int i = 0; i < logicBlockPrefabs.Length; i++)
+		for (int i = 0; i < spawnedLogicTypes.Length; i++)
 		{
-			if (logicBlockPrefabs[i] == null) continue;
+			LogicOp logicType = spawnedLogicTypes[i];
 			Vector3 spawnPos = spawnOrigin + Vector3.right * i * 0.4f;
-			var block = Instantiate(logicBlockPrefabs[i], spawnPos, Quaternion.identity);
-			block.name = logicBlockPrefabs[i].name;
+			var block = Instantiate(basePrefab, spawnPos, Quaternion.identity);
+			block.name = "LogicBlock_" + logicType + "_1x1";
+
+			// Configure LogicTile
+			var logicTile = block.GetComponent<LogicTile>();
+			if (logicTile != null)
+				logicTile.CellState = CellState.LogicOnly(logicType);
+
+			// Configure LogicBlock
+			var logicBlock = block.GetComponent<LogicBlock>();
+			if (logicBlock != null)
+				logicBlock.baseLogicOp = logicType;
+
 			if (debugLogs)
 				Debug.Log("[PuzzleInitializer] Spawned logic block: " + block.name + " at " + spawnPos);
 		}
