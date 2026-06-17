@@ -5,8 +5,8 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using System.Collections;
 
 /// <summary>
-/// Minimal: releases socket immediately. No joints, no parenting.
-/// TileConnector handles logical merging separately.
+/// Parents inserted tile to host's parent to form a group.
+/// GroupMoveSync handles smooth group movement via Transform sync (no physics).
 /// </summary>
 [RequireComponent(typeof(XRSocketInteractor))]
 public class BreakableLatchOnSocket : MonoBehaviour
@@ -20,13 +20,34 @@ public class BreakableLatchOnSocket : MonoBehaviour
         im = FindFirstObjectByType<XRInteractionManager>();
         socket.selectEntered.AddListener(OnSelectEntered);
     }
-
     void OnDestroy() => socket.selectEntered.RemoveListener(OnSelectEntered);
 
     void OnSelectEntered(SelectEnterEventArgs args)
     {
         var interactable = args.interactableObject as XRGrabInteractable;
         if (!interactable) return;
+        var inserted = (interactable as Component).transform;
+        var host = socket.transform;
+        var hostParent = host.parent ?? host;
+        var insRb = inserted.GetComponent<Rigidbody>();
+        if (!insRb) return;
+
+        // Skip if already in same group
+        if (inserted.parent == hostParent) return;
+
+        // Skip if merge-compatible (TileConnector handles)
+        var myTile = host.GetComponentInParent<TileBase>();
+        var otherTile = inserted.GetComponent<TileBase>();
+        if (myTile != null && otherTile != null)
+        {
+            var a = myTile.GetCellState(); var b = otherTile.GetCellState();
+            if (a.type == CellStateType.LogicOnly && b.type == CellStateType.PureValue) return;
+            if (a.type == CellStateType.ValueWithLogic && b.type == CellStateType.PureValue) return;
+            if (b.type == CellStateType.ValueWithLogic && a.type == CellStateType.PureValue) return;
+        }
+
+        // Parent to same group
+        inserted.SetParent(hostParent, true);
         StartCoroutine(ExitSocketDeferred(interactable));
     }
 
