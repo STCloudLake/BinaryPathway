@@ -3,16 +3,17 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
-/// Parents inserted tile to host's parent to form a group.
-/// GroupMoveSync handles smooth group movement via Transform sync (no physics).
+/// Groups nearby tiles. Has per-pair cooldown to prevent socket loop jitter.
 /// </summary>
 [RequireComponent(typeof(XRSocketInteractor))]
 public class BreakableLatchOnSocket : MonoBehaviour
 {
     XRSocketInteractor socket;
     XRInteractionManager im;
+    static Dictionary<(int, int), float> _cooldowns = new Dictionary<(int, int), float>();
 
     void Awake()
     {
@@ -27,28 +28,37 @@ public class BreakableLatchOnSocket : MonoBehaviour
         var interactable = args.interactableObject as XRGrabInteractable;
         if (!interactable) return;
         var inserted = (interactable as Component).transform;
-        var host = socket.transform;
-        var hostParent = host.parent ?? host;
         var insRb = inserted.GetComponent<Rigidbody>();
         if (!insRb) return;
 
-        // Skip if already in same group
-        if (inserted.parent == hostParent) return;
+        var host = socket.transform;
+        var hoseParent = host.parent ?? host;
+        var mySync = hostParent.GetComponent<GroupMoveSync>();
+        var otherSync = inserted.GetComponent<GroupMoveSync>();
+        if (mySync == null || otherSync == null) return;
 
-        // Skip if merge-compatible (TileConnector handles)
+        // Already in same group? Skip
+        if (mySync.GroupId >= 0 && otherSync.GroupId >= 0 && mySync.GroupId == otherSync.GroupId)
+            return;
+
+        // Cooldown per (myInstance, otherInstance) pair
+        int a = mySync.GetInstanceID(), b = otherSync.GetInstanceID();
+        var key = a < b ? (a, b) : (b, a);
+        if (_cooldowns.TryGetValue(key, out float t) && Time.time - t < 1.5f)
+            return;
+
+        // Skip if merge-compatible
         var myTile = host.GetComponentInParent<TileBase>();
         var otherTile = inserted.GetComponent<TileBase>();
         if (myTile != null && otherTile != null)
         {
-            var a = myTile.GetCellState(); var b = otherTile.GetCellState();
-            if (a.type == CellStateType.LogicOnly && b.type == CellStateType.PureValue) return;
-            if (a.type == CellStateType.ValueWithLogic && b.type == CellStateType.PureValue) return;
-            if (b.type == CellStateType.ValueWithLogic && a.type == CellStateType.PureValue) return;
+            var ca = myTile.GetCellState(); var cb = otherTile.GetCellState();
+            if (ca.type == CellStateType.LogicOnly && cb.type == CellStateType.PureValue) return;
+            if (ca.type == CellStateType.ValueWithLogic && cb.type == CellStateType.PureValue) return;
+            if (cb.type == CellStateType.ValueWithLogic && ca.type == CellStateType.PureValue) return;
         }
 
-        // Join same movement group (no parenting)
-        var mySync = hostParent.GetComponent<GroupMoveSync>();
-        var otherSync = inserted.GetComponent<GroupMoveSync>();
+        _cooldowns[key] = Time.time;
         GroupMoveSync.JoinGroup(mySync, otherSync);
         StartCoroutine(ExitSocketDeferred(interactable));
     }

@@ -7,14 +7,14 @@ using UnityEngine.XR.Interaction.Toolkit;
 /// Static-group-based movement sync. No Transform parenting.
 /// When grabbed, all tiles in the same group follow via direct Transform set.
 /// </summary>
-[RequireComponent(typeof(XRGrabInteractable))]
+[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
 public class GroupMoveSync : MonoBehaviour
 {
     // Static group registry: groupId → members
     private static Dictionary<int, HashSet<GroupMoveSync>> _groups = new Dictionary<int, HashSet<GroupMoveSync>>();
     private static int _nextGroupId;
 
-    private XRGrabInteractable _grab;
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _grab;
     private Rigidbody _rb;
     private int _groupId = -1;
     private Vector3[] _offsets;
@@ -25,7 +25,7 @@ public class GroupMoveSync : MonoBehaviour
 
     void Awake()
     {
-        _grab = GetComponent<XRGrabInteractable>();
+        _grab = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         _rb = GetComponent<Rigidbody>();
         _grab.selectEntered.AddListener(OnGrabbed);
         _grab.selectExited.AddListener(OnReleased);
