@@ -4612,7 +4612,6 @@ GameObject:
   - component: {fileID: 6542267409598578329}
   - component: {fileID: 2537874626597811835}
   - component: {fileID: 6555206270262901454}
-  - component: {fileID: 6572645836964792842}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -5020,18 +5019,6 @@ MonoBehaviour:
   blockWidth: 1
   blockHeight: 1
   cells: []
---- !u!114 &6572645836964792842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8123866627091296203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 031e55f26fa81b1479e355cd040fc26d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DetachOnGrab
 --- !u!1 &8135100670628045080
 GameObject:
   m_ObjectHideFlags: 0

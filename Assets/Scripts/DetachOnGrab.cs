@@ -7,16 +7,16 @@ using UnityEngine.XR.Interaction.Toolkit;
 /// On grab: suspends child rigidbodies (no physics jitter) but keeps colliders active
 /// (so second hand can still grab children). Children detach on their own grab.
 /// </summary>
-[RequireComponent(typeof(XRGrabInteractable))]
+[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
 public class DetachOnGrab : MonoBehaviour
 {
-    private XRGrabInteractable _grab;
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _grab;
     private Rigidbody _rb;
     private List<Rigidbody> _suspendedRbs = new List<Rigidbody>();
 
     void Awake()
     {
-        _grab = GetComponent<XRGrabInteractable>();
+        _grab = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         _rb = GetComponent<Rigidbody>();
         _grab.selectEntered.AddListener(OnGrabbed);
         _grab.selectExited.AddListener(OnReleased);
