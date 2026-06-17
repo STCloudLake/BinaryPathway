@@ -8,17 +8,17 @@ using UnityEngine.XR.Interaction.Toolkit;
 /// When released: restores non-kinematic.
 /// When a child is grabbed: detaches from parent.
 /// </summary>
-[RequireComponent(typeof(XRGrabInteractable))]
+[RequireComponent(typeof(UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable))]
 public class DetachOnGrab : MonoBehaviour
 {
-    private XRGrabInteractable _grab;
+    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _grab;
     private Rigidbody _rb;
     private bool _wasKinematic;
     private List<Rigidbody> _frozenChildren = new List<Rigidbody>();
 
     void Awake()
     {
-        _grab = GetComponent<XRGrabInteractable>();
+        _grab = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
         _rb = GetComponent<Rigidbody>();
         _grab.selectEntered.AddListener(OnGrabbed);
         _grab.selectExited.AddListener(OnReleased);
