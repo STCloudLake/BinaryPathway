@@ -46,8 +46,10 @@ public class BreakableLatchOnSocket : MonoBehaviour
             if (b.type == CellStateType.ValueWithLogic && a.type == CellStateType.PureValue) return;
         }
 
-        // Parent to same group
-        inserted.SetParent(hostParent, true);
+        // Join same movement group (no parenting)
+        var mySync = hostParent.GetComponent<GroupMoveSync>();
+        var otherSync = inserted.GetComponent<GroupMoveSync>();
+        GroupMoveSync.JoinGroup(mySync, otherSync);
         StartCoroutine(ExitSocketDeferred(interactable));
     }
 
