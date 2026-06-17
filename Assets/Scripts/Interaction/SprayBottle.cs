@@ -2,8 +2,8 @@
 using UnityEngine;
 
 /// <summary>
-/// NOT-spray bottle tool. Uses Oculus ISDK Grabbable for hold detection
-/// and OVRInput/Space for trigger. Raycasts forward, applies NOT to hit tiles.
+/// NOT-spray bottle tool. Space key sprays forward from bottle position.
+/// Applies NOT to hit LogicTiles. Limited uses per level.
 /// </summary>
 public class SprayBottle : MonoBehaviour
 {
@@ -19,16 +19,11 @@ public class SprayBottle : MonoBehaviour
     [Header("State")]
     [SerializeField] private int _remainingUses;
 
-    private Oculus.Interaction.Grabbable _grabbable;
-    private bool _wasSpraying;
-    private float _sprayCooldown;
-
     public int RemainingUses => _remainingUses;
     public bool IsEmpty => _remainingUses <= 0;
 
     void Awake()
     {
-        _grabbable = GetComponent<Oculus.Interaction.Grabbable>();
         _remainingUses = maxUses;
     }
 
@@ -36,50 +31,27 @@ public class SprayBottle : MonoBehaviour
     {
         if (IsEmpty) return;
 
-        // Detect if bottle is held via Oculus ISDK grab
-        bool isHeld = _grabbable != null && _grabbable.SelectingPointsCount > 0;
-
-        // Trigger: Space (Editor) or Oculus Index Trigger (Quest)
-        bool sprayTrigger = Input.GetKey(KeyCode.Space);
-#if UNITY_ANDROID && !UNITY_EDITOR
-        sprayTrigger = OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch)
-                    || OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch);
-#endif
-
-        // In Editor, allow spray without hold for testing
-        bool isSpraying = sprayTrigger;
-#if UNITY_ANDROID && !UNITY_EDITOR
-        isSpraying = isHeld && sprayTrigger;
-#endif
-
-        if (isSpraying && !_wasSpraying && _sprayCooldown <= 0f)
+        // Space key to spray (Editor test)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("[SprayBottle] SPRAY TRIGGERED! Forward=" + transform.forward);
             PerformSpray();
-            _sprayCooldown = 0.3f;
         }
-
-        if (!isSpraying)
-            _sprayCooldown = Mathf.Max(0f, _sprayCooldown - Time.deltaTime);
-
-        _wasSpraying = isSpraying;
     }
 
     public void PerformSpray()
     {
+        if (IsEmpty) return;
+
         Vector3 origin = transform.position + transform.forward * 0.1f;
         Vector3 direction = transform.forward;
 
         if (Physics.Raycast(origin, direction, out RaycastHit hit, sprayRange, sprayLayerMask))
         {
             var target = hit.collider.GetComponentInParent<TileBase>();
-            if (target != null)
+            if (target is LogicTile logicTile)
             {
-                if (target is LogicTile logicTile)
-                {
-                    logicTile.ApplyNot();
-                    Debug.Log($"[SprayBottle] NOT: {logicTile.CellState}");
-                }
+                logicTile.ApplyNot();
+                Debug.Log($"[SprayBottle] NOT: {logicTile.CellState}");
             }
 
             if (sprayParticles != null)
@@ -92,7 +64,6 @@ public class SprayBottle : MonoBehaviour
         _remainingUses--;
         if (spraySound != null) spraySound.Play();
         Debug.Log($"[SprayBottle] Used. Remaining: {_remainingUses}");
-        if (IsEmpty) Debug.Log("[SprayBottle] Empty!");
     }
 
     public void Refill(int uses)
