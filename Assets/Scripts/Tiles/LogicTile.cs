@@ -28,6 +28,7 @@ public class LogicTile : TileBase
         }
         set
         {
+            if (_stateType == value.type && _value == value.value && _logicOp == value.logic) return; // No change
             _stateType = value.type;
             _value = value.value;
             _logicOp = value.logic;
@@ -68,17 +69,18 @@ public class LogicTile : TileBase
     private void ApplyLook()
     {
         if (targetRenderer == null) return;
-        Material target = _stateType switch
+        try
         {
-            CellStateType.PureValue      => (_value == 1) ? matOne : matZero,
-            CellStateType.ValueWithLogic => matLogicWaiting,
-            CellStateType.LogicOnly      => matLogicWaiting,
-            _ => matZero
-        };
-        if (target != null)
-        {
+            Material target = _stateType switch
+            {
+                CellStateType.PureValue      => (_value == 1) ? matOne : matZero,
+                CellStateType.ValueWithLogic => matLogicWaiting,
+                CellStateType.LogicOnly      => matLogicWaiting,
+                _ => matZero
+            };
+            if (target == null) return;
+
             targetRenderer.material = target;
-            // Set emission on the INSTANCE (not shared material)
             var matInstance = targetRenderer.material;
             Color emit = _stateType switch
             {
@@ -89,6 +91,10 @@ public class LogicTile : TileBase
             };
             matInstance.EnableKeyword("_EMISSION");
             matInstance.SetColor("_EmissionColor", emit);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[LogicTile] ApplyLook failed on {name}: {e.Message}");
         }
     }
 
