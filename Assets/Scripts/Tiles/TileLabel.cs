@@ -57,6 +57,7 @@ public class TileLabel : MonoBehaviour
         {
             _lastState = currentState;
             RefreshDisplay(currentState);
+            Debug.Log($"[TileLabel] {name} updated: {currentState}");
         }
     }
 
