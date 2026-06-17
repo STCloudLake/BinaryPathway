@@ -170,8 +170,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 80
-  breakTorque: 80
+  breakForce: 15
+  breakTorque: 15
   useConfigurable: 1
   jointEnableCollision: 0
   projectionDistance: 0.005
@@ -322,8 +322,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 80
-  breakTorque: 80
+  breakForce: 15
+  breakTorque: 15
   useConfigurable: 1
   jointEnableCollision: 0
   projectionDistance: 0.005
@@ -556,8 +556,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 80
-  breakTorque: 80
+  breakForce: 15
+  breakTorque: 15
   useConfigurable: 1
   jointEnableCollision: 0
   projectionDistance: 0.005
@@ -1150,8 +1150,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 80
-  breakTorque: 80
+  breakForce: 15
+  breakTorque: 15
   useConfigurable: 1
   jointEnableCollision: 0
   projectionDistance: 0.005
@@ -4158,8 +4158,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 80
-  breakTorque: 80
+  breakForce: 15
+  breakTorque: 15
   useConfigurable: 1
   jointEnableCollision: 0
   projectionDistance: 0.005
@@ -5015,8 +5015,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c78f8c918d7ad438f3e23d6daa3065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLatchOnSocket
-  breakForce: 80
-  breakTorque: 80
+  breakForce: 15
+  breakTorque: 15
   useConfigurable: 1
   jointEnableCollision: 0
   projectionDistance: 0.005
