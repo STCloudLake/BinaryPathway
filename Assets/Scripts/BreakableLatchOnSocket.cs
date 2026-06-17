@@ -32,7 +32,7 @@ public class BreakableLatchOnSocket : MonoBehaviour
         if (!insRb) return;
 
         var host = socket.transform;
-        var hoseParent = host.parent ?? host;
+        var hostParent = host.parent ?? host;
         var mySync = hostParent.GetComponent<GroupMoveSync>();
         var otherSync = inserted.GetComponent<GroupMoveSync>();
         if (mySync == null || otherSync == null) return;
