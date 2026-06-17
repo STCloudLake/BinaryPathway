@@ -78,25 +78,17 @@ public class LogicTile : TileBase
         if (target != null)
         {
             targetRenderer.material = target;
-            // Set emission glow so state is visible from all angles
-            Color emit;
-            switch (_stateType)
+            // Set emission on the INSTANCE (not shared material)
+            var matInstance = targetRenderer.material;
+            Color emit = _stateType switch
             {
-                case CellStateType.PureValue:
-                    emit = _value == 1 ? Color.green * 1.5f : Color.red * 1.5f;
-                    break;
-                case CellStateType.ValueWithLogic:
-                    emit = new Color(1f, 0.4f, 0f) * 1.5f;
-                    break;
-                case CellStateType.LogicOnly:
-                    emit = new Color(0.3f, 0.3f, 0.3f) * 1.5f;
-                    break;
-                default:
-                    emit = Color.black;
-                    break;
-            }
-            target.EnableKeyword("_EMISSION");
-            target.SetColor("_EmissionColor", emit);
+                CellStateType.PureValue => _value == 1 ? Color.green * 1.5f : Color.red * 1.5f,
+                CellStateType.ValueWithLogic => new Color(1f, 0.4f, 0f) * 1.5f,
+                CellStateType.LogicOnly => new Color(0.3f, 0.3f, 0.3f) * 1.5f,
+                _ => Color.black
+            };
+            matInstance.EnableKeyword("_EMISSION");
+            matInstance.SetColor("_EmissionColor", emit);
         }
     }
 
