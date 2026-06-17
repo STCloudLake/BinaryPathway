@@ -15,11 +15,9 @@ public class PuzzleInitializer : MonoBehaviour
 	[Tooltip("ƴͼ������ GridContainer")]
 	public GridContainer gridContainer;
 
-	[Header("Tile Prefabs")]
-	[Tooltip("·���ϵ�Tile��value=1��")]
-	public GameObject pathTilePrefab;
-	[Tooltip("�����λ��Tile��value=0��")]
-	public GameObject emptyTilePrefab;
+	[Header("Tile Prefab")]
+	[Tooltip("Unified tile prefab — CellState is configured per instance at spawn time")]
+	public GameObject tilePrefab;
 
 	[Header("Logic Block Spawning")]
 	[Tooltip("Logic operation types to spawn (each becomes a LogicOnly block)")]
@@ -102,9 +100,9 @@ public void InitializePuzzle()
 			return;
 		}
 
-		if (pathTilePrefab == null || emptyTilePrefab == null)
+		if (tilePrefab == null)
 		{
-			Debug.LogError("[PuzzleInitializer] Tile prefabs not assigned");
+			Debug.LogError("[PuzzleInitializer] Tile prefab not assigned");
 			return;
 		}
 
@@ -307,11 +305,18 @@ public void InitializePuzzle()
 				{
 					var idx = new GridIndex(x, y, z);
 
-					GameObject prefab = pathSet.Contains(idx) ? pathTilePrefab : emptyTilePrefab;
+					GameObject prefab = tilePrefab;
 
 					// ������λ��ʵ����Tile
 					var tileGo = Instantiate(prefab, gridContainer.GetWorldPos(idx), Quaternion.identity);
 					var tile = tileGo.GetComponent<TileBase>();
+
+					// Configure CellState: path tiles = PureValue(1), empty = PureValue(0)
+					var logicTile = tileGo.GetComponent<LogicTile>();
+					if (logicTile != null)
+					{
+						logicTile.CellState = CellState.PureValue(pathSet.Contains(idx) ? 1 : 0);
+					}
 
 					if (tile != null)
 					{
@@ -460,8 +465,8 @@ private GameObject CreateProceduralMarker(string name, Color color, GridIndex in
 			return;
 		}
 
-		// Use emptyTilePrefab as base — it has all interaction components (LogicTile, LogicBlock, XRGrab, etc.)
-		GameObject basePrefab = emptyTilePrefab != null ? emptyTilePrefab : pathTilePrefab;
+		// Use unified tilePrefab as base
+		GameObject basePrefab = tilePrefab;
 		if (basePrefab == null)
 		{
 			Debug.LogWarning("[PuzzleInitializer] No tile prefab available for logic block spawn.");

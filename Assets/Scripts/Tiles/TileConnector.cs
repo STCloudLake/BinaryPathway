@@ -121,16 +121,7 @@ public class TileConnector : MonoBehaviour
 
     void ApplyCellState(CellState newState)
     {
-        if (_myTile is ToggleTile toggle)
-        {
-            // For ToggleTile, only pure values can be set
-            if (newState.type == CellStateType.PureValue)
-            {
-                while (toggle.Value != newState.value) toggle.Toggle();
-            }
-            // ValueWithLogic/LogicOnly on ToggleTile: not applicable (ignore for now)
-        }
-        else if (_myTile is LogicTile logicTile)
+        if (_myTile is LogicTile logicTile)
         {
             logicTile.CellState = newState;
         }

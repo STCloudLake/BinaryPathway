@@ -58,7 +58,7 @@ public class LogicTile : TileBase
     public Material matOne;
     public Material matLogicWaiting; // for ValueWithLogic or LogicOnly states
 
-    private void Awake()
+    protected virtual void Awake()
     {
         if (targetRenderer == null)
             targetRenderer = GetComponentInChildren<Renderer>();

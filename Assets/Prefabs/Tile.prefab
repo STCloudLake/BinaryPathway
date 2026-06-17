@@ -2816,7 +2816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 2c59325cff8447d47899d7e518a87833, type: 2}
-  m_Color: {r: 0, g: 1, b: 0, a: 0.2509804}
+  m_Color: {r: 1, g: 0, b: 0, a: 0.2509804}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2945,7 +2945,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3391,13 +3391,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interactables:
-  - {fileID: 5086031313646692551}
-  - {fileID: 205502967947826529}
-  - {fileID: 4784183334826302293}
-  - {fileID: 6987564340808728151}
-  - {fileID: 660693037113309936}
-  - {fileID: 6001049334465980887}
-  - {fileID: 2696113551457542477}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   _data: {fileID: 0}
 --- !u!1 &6010880216653316397
 GameObject:
@@ -4384,17 +4384,17 @@ GameObject:
   - component: {fileID: 9213724435145162725}
   - component: {fileID: 3541948456406984066}
   - component: {fileID: 8530487681595240103}
-  - component: {fileID: 1964755125304057151}
   - component: {fileID: 1688166527250589599}
   - component: {fileID: 1744056918525943066}
   - component: {fileID: 4914084351233239744}
   - component: {fileID: 1535245869004117808}
-  - component: {fileID: 1134093844326421754}
-  - component: {fileID: 4469007147690482565}
-  - component: {fileID: 1560758384636290894}
-  - component: {fileID: 1402512372938673539}
+  - component: {fileID: 289924513432185468}
+  - component: {fileID: 3640836371656670229}
+  - component: {fileID: 3955102875212540936}
+  - component: {fileID: 7671246083420303034}
+  - component: {fileID: 6542267409598578329}
   m_Layer: 0
-  m_Name: Tile_1
+  m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4470,7 +4470,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
   m_InteractionManager: {fileID: 0}
   m_Colliders:
-  - {fileID: 6320304639047807063}
+  - {fileID: 0}
   m_InteractionLayers:
     m_Bits: 1
   m_DistanceCalculationMode: 1
@@ -4531,7 +4531,7 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AutoFindParentInteractableInHierarchy: 0
   m_ParentInteractableObject: {fileID: 0}
-  m_AttachTransform: {fileID: 1292113111906786861}
+  m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
@@ -4586,18 +4586,6 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
---- !u!114 &1964755125304057151
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8123866627091296203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a529d728651d3664ba1408f4ab534931, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TileOne
 --- !u!114 &1688166527250589599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4646,7 +4634,7 @@ MonoBehaviour:
   _whenSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3589187400907652840}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Oculus.Interaction.AudioTrigger, Oculus.Interaction.Samples
         m_MethodName: PlayAudio
         m_Mode: 1
@@ -4661,7 +4649,7 @@ MonoBehaviour:
   _whenUnselect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3583549659308347742}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Oculus.Interaction.AudioTrigger, Oculus.Interaction.Samples
         m_MethodName: PlayAudio
         m_Mode: 1
@@ -4709,7 +4697,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableLinkNode
   reconnectCooldown: 0.2
---- !u!114 &1134093844326421754
+--- !u!114 &289924513432185468
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4723,7 +4711,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TileLabel
   labelHeight: 0.12
   labelSize: 0.06
---- !u!114 &4469007147690482565
+--- !u!114 &3640836371656670229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8123866627091296203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a30dcde57b28cc4c9630b7273ca8a69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TileZero
+--- !u!114 &3955102875212540936
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4742,7 +4742,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
---- !u!114 &1560758384636290894
+--- !u!114 &7671246083420303034
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4765,8 +4765,8 @@ MonoBehaviour:
   _snapPoseTransform: {fileID: 0}
   _defaultInteractable: {fileID: 0}
   _timeOutInteractable: {fileID: 0}
-  _timeOut: 0
---- !u!114 &1402512372938673539
+  _timeOut: 2
+--- !u!114 &6542267409598578329
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

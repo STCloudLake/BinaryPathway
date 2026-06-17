@@ -105,15 +105,10 @@ public class SprayBottle : MonoBehaviour
             logicTile.ApplyNot();
             Debug.Log($"[SprayBottle] NOT applied to LogicTile: {logicTile.CellState}");
         }
-        else if (tile is ToggleTile toggle)
-        {
-            toggle.Toggle();
-            Debug.Log($"[SprayBottle] NOT applied to ToggleTile: now {toggle.Value}");
-        }
         else
         {
-            // Tile_0 or Tile_1 cannot be flipped — they are immutable
-            Debug.Log($"[SprayBottle] Cannot NOT-flip immutable tile: {tile.GetType().Name}");
+            // Tile without LogicTile (shouldn't happen with unified architecture)
+            Debug.Log($"[SprayBottle] Cannot NOT-flip tile: {tile.GetType().Name}");
         }
     }
 

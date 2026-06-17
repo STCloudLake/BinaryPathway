@@ -3,75 +3,67 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-public class ToggleTile : TileBase
+/// <summary>
+/// Player-togglable tile. Extends LogicTile with poke-to-flip interaction.
+/// On poke: PureValue(0)↔PureValue(1), ValueWithLogic flips value,
+/// LogicOnly flips logic (AND↔NAND, OR↔NOR, XOR↔XNOR).
+/// </summary>
+public class ToggleTile : LogicTile
 {
-	[SerializeField] private int _value = 0;
-	public override int Value => _value;
-	public override bool LockAfterPlace => false;
+    [Header("Toggle Interaction")]
+    [Tooltip("Trigger sub-object collider scale multiplier")]
+    public float triggerScale = 1.5f;
 
-	[Header("素材")]
-	public Material matZero;
-	public Material matOne;
-	public Renderer targetRenderer;
+    private XRSimpleInteractable _toggleInteractable;
+    private GameObject _toggleTrigger;
+    private XRInteractionManager _interactionManager;
 
-	[Header("Toggle Interaction")]
-	[Tooltip("Trigger 子物体的碰撞体缩放倍数")]
-	public float triggerScale = 1.5f;
+    protected override void Awake()
+    {
+        base.Awake();
+        _interactionManager = FindFirstObjectByType<XRInteractionManager>();
+    }
 
-	private XRSimpleInteractable _toggleInteractable;
-	private GameObject _toggleTrigger;
-	private XRInteractionManager _interactionManager;
+    public override void OnPlaced(GridContainer container, GridIndex index)
+    {
+        base.OnPlaced(container, index);
 
-	void Awake()
-	{
-		_interactionManager = FindFirstObjectByType<XRInteractionManager>();
-	}
+        // Create toggle trigger on first placement
+        if (_toggleTrigger == null)
+        {
+            _toggleTrigger = new GameObject("ToggleTrigger");
+            _toggleTrigger.transform.SetParent(transform, false);
+            _toggleTrigger.transform.localPosition = Vector3.zero;
+            _toggleTrigger.transform.localScale = Vector3.one * triggerScale;
+            _toggleTrigger.layer = gameObject.layer;
 
-	public override void OnPlaced(GridContainer container, GridIndex index)
-	{
-		ApplyLook();
+            var col = _toggleTrigger.AddComponent<BoxCollider>();
+            col.isTrigger = true;
 
-		// 创建 toggle trigger 子物体（首次放置时）
-		if (_toggleTrigger == null)
-		{
-			_toggleTrigger = new GameObject("ToggleTrigger");
-			_toggleTrigger.transform.SetParent(transform, false);
-			_toggleTrigger.transform.localPosition = Vector3.zero;
-			_toggleTrigger.transform.localScale = Vector3.one * triggerScale;
-			_toggleTrigger.layer = gameObject.layer;
+            _toggleInteractable = _toggleTrigger.AddComponent<XRSimpleInteractable>();
+            _toggleInteractable.interactionManager = _interactionManager;
+            _toggleInteractable.selectMode = InteractableSelectMode.Single;
+            _toggleInteractable.selectEntered.AddListener(_ => Toggle());
+        }
 
-			var col = _toggleTrigger.AddComponent<BoxCollider>();
-			col.isTrigger = true;
+        _toggleTrigger.SetActive(true);
+        if (_interactionManager != null && _toggleInteractable != null)
+            _interactionManager.RegisterInteractable((IXRInteractable)_toggleInteractable);
+    }
 
-			_toggleInteractable = _toggleTrigger.AddComponent<XRSimpleInteractable>();
-			_toggleInteractable.interactionManager = _interactionManager;
-			_toggleInteractable.selectMode = InteractableSelectMode.Single;
-			_toggleInteractable.selectEntered.AddListener(_ => Toggle());
-		}
+    public override void OnRemoved(GridContainer container, GridIndex index)
+    {
+        base.OnRemoved(container, index);
+        if (_toggleTrigger != null)
+            _toggleTrigger.SetActive(false);
+    }
 
-		_toggleTrigger.SetActive(true);
-		if (_interactionManager != null && _toggleInteractable != null)
-			_interactionManager.RegisterInteractable((IXRInteractable)_toggleInteractable);
-	}
-
-	public override void OnRemoved(GridContainer container, GridIndex index)
-	{
-		if (_toggleTrigger != null)
-			_toggleTrigger.SetActive(false);
-	}
-
-	public void Toggle()
-	{
-		_value = 1 - _value;
-		ApplyLook();
-	}
-
-	private void ApplyLook()
-	{
-		if (!targetRenderer) return;
-		var mats = targetRenderer.sharedMaterials;
-		for (int i = 0; i < mats.Length; ++i)
-			mats[i] = (_value == 1 ? matOne : matZero);
-		targetRenderer.sharedMaterials = mats;
-	}
+    /// <summary>
+    /// Flip the cell state: value flips, logic flips.
+    /// Uses CellState.ApplyNot() for consistent behavior with SprayBottle.
+    /// </summary>
+    public void Toggle()
+    {
+        ApplyNot();
+    }
 }
