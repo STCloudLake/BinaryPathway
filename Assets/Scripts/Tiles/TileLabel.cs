@@ -2,15 +2,13 @@
 using UnityEngine;
 
 /// <summary>
-/// Dynamic world-space label showing tile's CellState.
-/// Polls CellState every frame, auto-updates text and color.
-/// Hides while tile is being grabbed.
+/// Dynamic label showing tile's CellState above the tile.
+/// Creates own TextMeshPro child at startup.
 /// </summary>
 [RequireComponent(typeof(TileBase))]
 public class TileLabel : MonoBehaviour
 {
-    [Header("Label Settings")]
-    public float labelHeight = 0.12f;
+    public float labelHeight = 0.15f;
     public float labelSize = 0.06f;
 
     private TileBase _tile;
@@ -24,12 +22,6 @@ public class TileLabel : MonoBehaviour
         CreateLabel();
     }
 
-    void Update()
-    {
-        if (_label == null || _tile == null) return;
-        UpdateLabel();
-    }
-
     void CreateLabel()
     {
         _labelGO = new GameObject("TileLabel");
@@ -40,6 +32,7 @@ public class TileLabel : MonoBehaviour
         _label = _labelGO.AddComponent<TMPro.TextMeshPro>();
         _label.fontSize = labelSize;
         _label.alignment = TMPro.TextAlignmentOptions.Center;
+        _label.rectTransform.sizeDelta = new Vector2(0.3f, 0.1f);
 
         var initial = _tile != null ? _tile.GetCellState() : CellState.PureValue(0);
         _lastState = initial;
@@ -50,33 +43,31 @@ public class TileLabel : MonoBehaviour
         scaler.faceCamera = true;
     }
 
-    void UpdateLabel()
+    void Update()
     {
+        if (_label == null || _tile == null) return;
         var currentState = _tile.GetCellState();
         if (!currentState.Equals(_lastState))
         {
             _lastState = currentState;
             RefreshDisplay(currentState);
-            Debug.Log($"[TileLabel] {name} updated: {currentState}");
+            Debug.Log($"[TileLabel] {name}: {currentState}");
         }
     }
 
     void RefreshDisplay(CellState state)
     {
         if (_label == null) return;
-
         switch (state.type)
         {
             case CellStateType.PureValue:
                 _label.text = state.value.ToString();
                 _label.color = state.value == 1 ? new Color(0.2f, 0.9f, 0.2f) : new Color(0.9f, 0.2f, 0.2f);
                 break;
-
             case CellStateType.ValueWithLogic:
                 _label.text = state.value + " " + LogicSymbol(state.logic);
                 _label.color = new Color(1f, 0.6f, 0.1f);
                 break;
-
             case CellStateType.LogicOnly:
                 _label.text = LogicSymbol(state.logic);
                 _label.color = new Color(0.5f, 0.5f, 0.5f);
@@ -86,12 +77,9 @@ public class TileLabel : MonoBehaviour
 
     static string LogicSymbol(LogicOp op) => op switch
     {
-        LogicOp.AND  => "AND",
-        LogicOp.NAND => "NAND",
-        LogicOp.OR   => "OR",
-        LogicOp.NOR  => "NOR",
-        LogicOp.XOR  => "XOR",
-        LogicOp.XNOR => "XNOR",
+        LogicOp.AND => "AND", LogicOp.NAND => "NAND",
+        LogicOp.OR => "OR", LogicOp.NOR => "NOR",
+        LogicOp.XOR => "XOR", LogicOp.XNOR => "XNOR",
         _ => "?"
     };
 }

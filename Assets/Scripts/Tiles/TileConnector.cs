@@ -49,7 +49,9 @@ public class TileConnector : MonoBehaviour
 
     void OnSocketSelectEntered(SelectEnterEventArgs args)
     {
-        var otherGO = args.interactableObject.transform.gameObject;
+        if (_isMerging) return;
+        var otherGO = args.interactableObject.transform?.gameObject;
+        if (otherGO == null) return;
         var otherTile = otherGO.GetComponent<TileBase>();
         if (otherTile == null) return;
 
@@ -109,35 +111,28 @@ public class TileConnector : MonoBehaviour
     /// <summary>
     /// Absorb a value tile into this logic tile. Disables XR, removes physics, destroys.
     /// </summary>
+    private bool _isMerging;
+
     void AbsorbTile(TileBase tile)
     {
-        if (tile == null) return;
+        if (tile == null || _isMerging) return;
         var go = tile.gameObject;
+        if (go == null) return;
 
-        // 1. Disable XR interactables immediately to prevent re-entrancy
+        _isMerging = true;
+
+        // Disable XR and hide immediately — never DestroyImmediate in XR callbacks
         var xrg = go.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
-        if (xrg != null) { xrg.enabled = false; }
+        if (xrg != null) xrg.enabled = false;
 
-        // 2. Disable all face sockets to stop select events
         foreach (var s in go.GetComponentsInChildren<XRSocketInteractor>())
-            s.enabled = false;
+            if (s != null) s.enabled = false;
 
-        // 3. Remove joints safely (find on self AND remove joints where this is connectedBody)
-        foreach (var j in go.GetComponents<Joint>())
-        {
-            j.connectedBody = null; // Break connection first
-            DestroyImmediate(j);
-        }
-
-        // 4. Remove physics components
-        var rb = go.GetComponent<Rigidbody>();
-        if (rb != null) DestroyImmediate(rb);
-        foreach (var c in go.GetComponents<Collider>())
-            DestroyImmediate(c);
-
-        // 5. Hide and destroy
         go.SetActive(false);
-        DestroyImmediate(go);
+
+        // Deferred destroy — safe outside XR event cycle
+        Destroy(go, 0.1f);
+        _isMerging = false;
     }
 
     void ApplyCellState(CellState newState)
