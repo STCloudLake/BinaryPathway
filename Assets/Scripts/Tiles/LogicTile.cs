@@ -64,7 +64,22 @@ public class LogicTile : TileBase
     {
         if (targetRenderer == null)
             targetRenderer = GetComponentInChildren<Renderer>();
-        ApplyLook();
+
+        // Pre-warm all materials to force shader compilation upfront,
+        // preventing synchronous compilation stall during gameplay spray.
+        if (targetRenderer != null)
+        {
+            var saved = targetRenderer.sharedMaterial;
+            foreach (var m in new[] { matZero, matOne, matLogicWaiting, matValueWithLogic })
+            {
+                if (m != null && m != saved)
+                {
+                    targetRenderer.sharedMaterial = m;
+                }
+            }
+            targetRenderer.sharedMaterial = saved; // restore
+            ApplyLook();
+        }
     }
 
     private void ApplyLook()
@@ -77,7 +92,7 @@ public class LogicTile : TileBase
             CellStateType.LogicOnly      => matLogicWaiting,
             _ => matZero
         };
-        if (target != null)
+        if (target != null && target != targetRenderer.sharedMaterial)
             targetRenderer.sharedMaterial = target;
     }
 

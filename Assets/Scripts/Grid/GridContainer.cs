@@ -339,11 +339,16 @@ public Vector3 GetWorldPos(GridIndex i)
 		var n = GetNode(i);
 		n.occupied = true;
 		n.placedTile = tile;
-		n.cellState = tile.GetCellState(); // Sync CellState from tile
+		n.cellState = tile.GetCellState();
 		tile.transform.position = n.worldPos;
-		tile.transform.rotation = Quaternion.identity; // Align to grid
+		tile.transform.rotation = Quaternion.identity;
+
+		// Lock physics to prevent jitter between adjacent placed tiles
+		var rb = tile.GetComponent<Rigidbody>();
+		if (rb != null) rb.isKinematic = true;
+
 		tile.OnPlaced(this, i);
-			OnTilePlaced?.Invoke(tile, i);
+		OnTilePlaced?.Invoke(tile, i);
 		return true;
 	}
 
@@ -354,9 +359,16 @@ public Vector3 GetWorldPos(GridIndex i)
 		var tile = n.placedTile;
 		n.occupied = false;
 		n.placedTile = null;
-		n.cellState = CellState.PureValue(0); // Reset cell state on remove
-		if (tile != null) tile.OnRemoved(this, i);
-			OnTileRemoved?.Invoke(tile, i);
+		n.cellState = CellState.PureValue(0);
+
+		// Restore physics so the tile can be grabbed/moved again
+		if (tile != null)
+		{
+			var rb = tile.GetComponent<Rigidbody>();
+			if (rb != null) rb.isKinematic = false;
+			tile.OnRemoved(this, i);
+		}
+		OnTileRemoved?.Invoke(tile, i);
 
 		//SetNodeMaterial(i, defaultMat);
 		return true;
@@ -398,10 +410,67 @@ public bool CheckConnectivity(GridIndex start, GridIndex goal)
 		return false;
 	}
 
+	/// <summary>
+	/// Returns the connected path from start to goal as a list of GridIndex.
+	/// Uses BFS with parent tracking for path reconstruction.
+	/// Returns null if not connected.
+	/// </summary>
+	public List<GridIndex> GetConnectedPath(GridIndex start, GridIndex goal)
+	{
+		if (!InBounds(start) || !InBounds(goal)) return null;
+		var s = GetNode(start);
+		var g = GetNode(goal);
+		if (s == null || g == null) return null;
+		if (!IsOne(s) || !IsOne(g)) return null;
+
+		_bfsQueue.Clear();
+		_bfsVisited.Clear();
+		var parent = new Dictionary<GridIndex, GridIndex>();
+
+		_bfsVisited.Add(start);
+		_bfsQueue.Enqueue(start);
+
+		while (_bfsQueue.Count > 0)
+		{
+			var cur = _bfsQueue.Dequeue();
+			if (cur.Equals(goal))
+			{
+				// Reconstruct path
+				var path = new List<GridIndex>();
+				var node = goal;
+				while (true)
+				{
+					path.Add(node);
+					if (node.Equals(start)) break;
+					node = parent[node];
+				}
+				path.Reverse();
+				return path;
+			}
+
+			foreach (var nb in GetNeighbors(cur))
+			{
+				if (!_bfsVisited.Contains(nb) && IsOne(GetNode(nb)))
+				{
+					_bfsVisited.Add(nb);
+					_bfsQueue.Enqueue(nb);
+					parent[nb] = cur;
+				}
+			}
+		}
+		return null;
+	}
+
 	private bool IsOne(GridNode node)
 	{
 		if (node == null || !node.occupied) return false;
-		// Use CellState for BFS — only PureValue(1) is conductive
+		// Read LIVE state from the placed tile (spray bottle may have updated it)
+		if (node.placedTile != null)
+		{
+			var live = node.placedTile.GetCellState();
+			node.cellState = live; // sync back to node
+			return live.IsConductive();
+		}
 		return node.cellState.IsConductive();
 	}
 
@@ -466,6 +535,10 @@ public bool CheckConnectivity(GridIndex start, GridIndex goal)
 		// Position the LogicTile at the grid cell
 		logicCell.transform.position = node.worldPos;
 		logicCell.transform.rotation = Quaternion.identity;
+
+		var rb = logicCell.GetComponent<Rigidbody>();
+		if (rb != null) rb.isKinematic = true;
+
 		logicCell.OnPlaced(this, i);
 		OnTilePlaced?.Invoke(logicCell, i);
 	}

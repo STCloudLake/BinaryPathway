@@ -96,8 +96,7 @@ public class ConnectivityVisualizer : MonoBehaviour
 			_lastConnectivityState = isConnected;
 			_lastStateKnown = true;
 
-			if (debugLogs)
-				Debug.Log($"[{name}] ��ͨ��: {startIndex} -> {goalIndex} = {(isConnected ? "��ͨ ?" : "�Ͽ� ?")}");
+			Debug.Log($"[Connectivity] {startIndex} -> {goalIndex} = {(isConnected ? "CONNECTED" : "BROKEN")}");
 		}
 	}
 

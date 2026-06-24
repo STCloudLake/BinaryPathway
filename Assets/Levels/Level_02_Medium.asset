@@ -24,10 +24,14 @@ MonoBehaviour:
     y: 5
     z: 0
   pathAlgorithm: 2
-  pathRemovalRatio: 0.4
+  notBreakCount: 3
+  logicCaptureCount: 2
+  captureLogicOp: 0
+  forceNoDiagonals: 1
+  emptyCells: []
   maxMoves: 50
   timeLimit: 0
-  sprayUses: 99
+  sprayUses: 5
   levelName: Level 2 - Medium
   description: Standard 6x6 maze. 40% path removal with move limit.
   levelNumber: 2

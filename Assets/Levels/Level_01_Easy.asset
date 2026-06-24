@@ -24,10 +24,14 @@ MonoBehaviour:
     y: 3
     z: 0
   pathAlgorithm: 0
-  pathRemovalRatio: 0.3
+  notBreakCount: 3
+  logicCaptureCount: 1
+  captureLogicOp: 0
+  forceNoDiagonals: 1
+  emptyCells: []
   maxMoves: 0
   timeLimit: 0
-  sprayUses: 99
+  sprayUses: 5
   levelName: Level 1 - Easy
   description: A gentle introduction. Small 4x4 grid with a straight path and only
     30% tiles removed.

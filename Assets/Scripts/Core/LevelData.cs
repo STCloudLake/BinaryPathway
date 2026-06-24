@@ -8,8 +8,8 @@ using UnityEngine;
 public class LevelData : ScriptableObject
 {
     [Header("Grid")]
-    [Min(3)] public int gridWidth = 6;
-    [Min(3)] public int gridHeight = 6;
+    [Min(1)] public int gridWidth = 6;
+    [Min(1)] public int gridHeight = 6;
     [Min(1)] public int gridLayers = 1;
 
     [Header("Path")]
@@ -19,9 +19,21 @@ public class LevelData : ScriptableObject
     [Tooltip("0=Straight, 1=Random, 2=Maze (DFS)")]
     [Range(0, 2)] public int pathAlgorithm = 2;
 
-    [Header("Difficulty")]
-    [Tooltip("Fraction of path tiles to remove after generation")]
-    [Range(0, 1)] public float pathRemovalRatio = 0.4f;
+    [Header("Puzzle Transformations")]
+    [Tooltip("Number of path tiles to corrupt with NOT (PureValue(1)->PureValue(0)). Fixed by spray.")]
+    [Min(0)] public int notBreakCount = 2;
+
+    [Tooltip("Number of path tiles to corrupt with LogicCapture (PureValue(1)->LogicOnly). Fixed by merging value tiles.")]
+    [Min(0)] public int logicCaptureCount = 1;
+
+    [Tooltip("Logic operation to imprint on LogicCapture tiles.")]
+    public LogicOp captureLogicOp = LogicOp.AND;
+
+    [Tooltip("Disable diagonal BFS for this level (recommended).")]
+    public bool forceNoDiagonals = true;
+
+    [Tooltip("Cells left empty (no tile) — player must fill them. Tutorial use.")]
+    public GridIndex[] emptyCells = new GridIndex[0];
 
     [Tooltip("Maximum tile moves allowed (0 = unlimited)")]
     [Min(0)] public int maxMoves = 0;
